@@ -1,21 +1,21 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import { motion, useReducedMotion } from "motion/react";
 import {
-  Smartphone,
   ArrowRight,
-  User,
-  Link2,
-  ShoppingBag,
-  Palette,
   BarChart3,
-  Plus,
   Check,
   ExternalLink,
+  Link2,
+  Palette,
+  Plus,
+  ShoppingBag,
+  Smartphone,
   Sparkles,
+  User,
 } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import Link from "next/link";
+import React from "react";
 import { motionTokens } from "@/lib/motionTokens";
 import { cn } from "@/lib/utils";
 
@@ -88,9 +88,24 @@ function DashboardMockupInline() {
             {/* Links List Mockup (2 cols) */}
             <div className="md:col-span-2 space-y-3 overflow-hidden flex flex-col justify-start">
               {[
-                { title: "My Spotify Album", url: "https://open.spotify.com/...", clicks: 429, isDeep: true },
-                { title: "System Design Masterclass", url: "https://trivio.com/...", clicks: 312, isDeep: false },
-                { title: "YouTube Vlog Channel", url: "https://youtube.com/...", clicks: 189, isDeep: true },
+                {
+                  title: "My Spotify Album",
+                  url: "https://open.spotify.com/...",
+                  clicks: 429,
+                  isDeep: true,
+                },
+                {
+                  title: "System Design Masterclass",
+                  url: "https://trivio.com/...",
+                  clicks: 312,
+                  isDeep: false,
+                },
+                {
+                  title: "YouTube Vlog Channel",
+                  url: "https://youtube.com/...",
+                  clicks: 189,
+                  isDeep: true,
+                },
               ].map((link, idx) => (
                 <div
                   key={idx}
@@ -133,12 +148,20 @@ function DashboardMockupInline() {
                   {[
                     { label: "Spotify", pct: 46, color: "bg-primary" },
                     { label: "Design Course", pct: 33, color: "bg-secondary" },
-                    { label: "YouTube Channel", pct: 21, color: "bg-muted-foreground/60" },
+                    {
+                      label: "YouTube Channel",
+                      pct: 21,
+                      color: "bg-muted-foreground/60",
+                    },
                   ].map((bar, idx) => (
                     <div key={idx} className="space-y-1">
                       <div className="flex justify-between text-[10px]">
-                        <span className="text-muted-foreground font-medium">{bar.label}</span>
-                        <span className="text-foreground font-bold">{bar.pct}%</span>
+                        <span className="text-muted-foreground font-medium">
+                          {bar.label}
+                        </span>
+                        <span className="text-foreground font-bold">
+                          {bar.pct}%
+                        </span>
                       </div>
                       <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                         <div
@@ -181,20 +204,29 @@ export function LandingHero() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: motionTokens.duration.normal, ease: motionTokens.easing.smooth }}
+        transition={{
+          duration: motionTokens.duration.normal,
+          ease: motionTokens.easing.smooth,
+        }}
         className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-card border border-border text-muted-foreground text-xs font-semibold uppercase tracking-wider mb-6"
       >
-        <Smartphone size={12} className="text-primary" /> Deep Link Aggregator & Shop
+        <Smartphone size={12} className="text-primary" /> Deep Link Aggregator &
+        Shop
       </motion.div>
 
       {/* Main Title */}
       <motion.h1
         initial={{ opacity: 0, y: reduce ? 0 : motionTokens.distance.md }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: motionTokens.duration.normal, ease: motionTokens.easing.smooth, delay: 0.08 }}
+        transition={{
+          duration: motionTokens.duration.normal,
+          ease: motionTokens.easing.smooth,
+          delay: 0.08,
+        }}
         className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-foreground max-w-4xl mx-auto leading-[1.08] mb-6"
       >
-        Everything you create.<br />
+        Everything you create.
+        <br />
         <span className="bg-gradient-to-r from-primary via-secondary to-primary/80 bg-clip-text text-transparent">
           One beautiful place.
         </span>
@@ -204,24 +236,36 @@ export function LandingHero() {
       <motion.p
         initial={{ opacity: 0, y: reduce ? 0 : motionTokens.distance.md }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: motionTokens.duration.normal, ease: motionTokens.easing.smooth, delay: 0.16 }}
+        transition={{
+          duration: motionTokens.duration.normal,
+          ease: motionTokens.easing.smooth,
+          delay: 0.16,
+        }}
         className="text-muted-foreground text-lg sm:text-xl max-w-xl mx-auto leading-relaxed mb-8"
       >
-        Share custom links. Launch mobile apps instantly on phone clicks. Showcase up to 3 course products. Monetize your digital presence.
+        Share custom links. Launch mobile apps instantly on phone clicks.
+        Showcase up to 3 course products. Monetize your digital presence.
       </motion.p>
 
       {/* Buttons */}
       <motion.div
         initial={{ opacity: 0, y: reduce ? 0 : motionTokens.distance.md }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: motionTokens.duration.normal, ease: motionTokens.easing.smooth, delay: 0.24 }}
+        transition={{
+          duration: motionTokens.duration.normal,
+          ease: motionTokens.easing.smooth,
+          delay: 0.24,
+        }}
         className="flex flex-col sm:flex-row items-center justify-center gap-4"
       >
         <Link href="/register" className="w-full sm:w-auto" passHref>
           <motion.button
             whileHover={reduce ? {} : { scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            transition={{ duration: motionTokens.duration.fast, ease: motionTokens.easing.sharp }}
+            transition={{
+              duration: motionTokens.duration.fast,
+              ease: motionTokens.easing.sharp,
+            }}
             className="w-full h-12 px-8 rounded-full bg-primary text-primary-foreground font-semibold flex items-center justify-center gap-2 hover:bg-primary/95 transition shadow-lg shadow-primary/10 cursor-pointer"
           >
             Create your Trivio <ArrowRight size={16} />
@@ -231,7 +275,10 @@ export function LandingHero() {
           <motion.button
             whileHover={reduce ? {} : { scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            transition={{ duration: motionTokens.duration.fast, ease: motionTokens.easing.sharp }}
+            transition={{
+              duration: motionTokens.duration.fast,
+              ease: motionTokens.easing.sharp,
+            }}
             className="w-full h-12 px-8 rounded-full border border-border bg-card/50 hover:bg-card text-foreground font-semibold transition cursor-pointer"
           >
             See Examples
@@ -243,7 +290,11 @@ export function LandingHero() {
       <motion.div
         initial={{ opacity: 0, y: reduce ? 0 : motionTokens.distance.lg }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: motionTokens.duration.slow, ease: motionTokens.easing.smooth, delay: 0.32 }}
+        transition={{
+          duration: motionTokens.duration.slow,
+          ease: motionTokens.easing.smooth,
+          delay: 0.32,
+        }}
         className="mt-16 sm:mt-24"
       >
         <DashboardMockupInline />

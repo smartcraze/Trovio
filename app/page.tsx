@@ -1,17 +1,9 @@
 import {
   ArrowRight,
   ChevronRight,
-  Eye,
-  Layers,
-  Palette,
-  Shield,
-  ShoppingBag,
-  Smartphone,
-  Sparkles,
   TrendingUp,
 } from "lucide-react";
 import Link from "next/link";
-import React from "react";
 import { BrandLogo } from "@/components/brand-logo";
 import DashboardMockup from "@/components/DashboardMockup";
 import Navbar from "@/components/navbar";
@@ -27,7 +19,6 @@ import {
 import { getSession } from "@/lib/auth";
 import User from "@/lib/models/User";
 import dbConnect from "@/lib/mongodb";
-import { cn } from "@/lib/utils";
 
 export const metadata = {
   title: "Trivio - Digital Identity, Deep-Links & Creator Commerce",
@@ -96,7 +87,7 @@ export default async function HomePage() {
         <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-foreground max-w-4xl mx-auto leading-[1.08] mb-6">
           Everything you create.
           <br />
-          <span className="bg-gradient-to-r from-primary via-secondary to-primary/80 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-primary via-secondary to-primary/80 bg-clip-text text-transparent">
             One beautiful place.
           </span>
         </h1>
@@ -108,14 +99,14 @@ export default async function HomePage() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link href="/register" className="w-full sm:w-auto">
-            <button className="w-full h-12 px-8 rounded-full bg-primary text-primary-foreground font-semibold flex items-center justify-center gap-2 hover:bg-primary/95 transition shadow-lg shadow-primary/10">
+            <Button className="w-full h-12 px-8 rounded-full bg-primary text-primary-foreground font-semibold flex items-center justify-center gap-2 hover:bg-primary/95 transition shadow-lg shadow-primary/10">
               Create your Trivio <ArrowRight size={16} />
-            </button>
+            </Button>
           </Link>
           <a href="#examples" className="w-full sm:w-auto">
-            <button className="w-full h-12 px-8 rounded-full border border-border bg-card/50 hover:bg-card text-foreground font-semibold transition">
+            <Button className="w-full h-12 px-8 rounded-full border border-border bg-card/50 hover:bg-card text-foreground font-semibold transition">
               See Examples
-            </button>
+            </Button>
           </a>
         </div>
 
@@ -293,7 +284,6 @@ export default async function HomePage() {
         </div>
       </section >
 
-      {/* FOOTER */}
       < footer className="border-t border-border py-12 relative z-10 bg-background" >
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-6 text-muted-foreground text-sm">
           <div className="flex items-center gap-3">

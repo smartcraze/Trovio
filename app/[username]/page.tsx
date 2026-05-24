@@ -1,6 +1,5 @@
 import { Sparkles } from "lucide-react";
 import { notFound } from "next/navigation";
-import React from "react";
 import LinkCard from "@/components/LinkCard";
 import { ProductsShowcase } from "@/components/profile/products-showcase";
 import { ProfileFooter } from "@/components/profile/profile-footer";
