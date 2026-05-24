@@ -55,7 +55,7 @@ export default function RegisterPage() {
       <Card className="w-full max-w-md border-border bg-card/60 backdrop-blur-2xl p-4 shadow-2xl relative z-10 rounded-[28px]">
         <CardHeader className="text-center pb-2">
           <div className="flex justify-center mb-4">
-            <BrandLogo variant="white" width={130} height={38} />
+            <BrandLogo variant="dynamic" width={130} height={38} />
           </div>
           <CardTitle className="text-2xl font-bold tracking-tight text-foreground">
             Create your account

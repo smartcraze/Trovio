@@ -2,8 +2,8 @@
 
 import { Menu } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { BrandLogo } from "@/components/brand-logo";
 
 import { Button } from "@/components/ui/button";
@@ -29,48 +29,48 @@ const LINKS = [
 ];
 
 function ThemeToggle() {
-    const { resolvedTheme, setTheme } = useTheme();
-    const [mounted, setMounted] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-    useEffect(() => {
-        setMounted(true);
-    }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-    if (!mounted) {
-        return <div className="w-10 h-10 rounded-full border border-border bg-card/50" />;
-    }
+  if (!mounted) {
+    return <div className="w-9 h-9 bg-transparent" />;
+  }
 
-    const isDark = resolvedTheme === "dark";
+  const isDark = resolvedTheme === "dark";
 
-    return (
-        <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(isDark ? "light" : "dark")}
-            className="rounded-full w-10 h-10 text-muted-foreground hover:text-foreground cursor-pointer flex items-center justify-center border border-border/40 bg-card/25 transition-colors duration-300"
-            aria-label="Toggle Theme"
-        >
-            <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="icon icon-tabler icons-tabler-outline icon-tabler-circle-half-2 transition-transform duration-500 hover:rotate-180"
-            >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                <path d="M12 3v18" />
-                <path d="M12 14l7 -7" />
-                <path d="M12 19l8.5 -8.5" />
-                <path d="M12 9l4.5 -4.5" />
-            </svg>
-        </Button>
-    );
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className="rounded-full text-muted-foreground hover:text-foreground cursor-pointer flex items-center justify-center transition-colors duration-300"
+      aria-label="Toggle Theme"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="icon icon-tabler icons-tabler-outline icon-tabler-circle-half-2 transition-transform duration-500 hover:rotate-180"
+      >
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+        <path d="M12 3v18" />
+        <path d="M12 14l7 -7" />
+        <path d="M12 19l8.5 -8.5" />
+        <path d="M12 9l4.5 -4.5" />
+      </svg>
+    </Button>
+  );
 }
 
 interface NavbarProps {
@@ -108,9 +108,7 @@ function Navbar({ user }: NavbarProps) {
           {user ? (
             <div className="flex items-center gap-3">
               <Link href="/dashboard" passHref>
-                <Button variant="outline" className="rounded-full">
-                  Dashboard
-                </Button>
+                <Button variant="default">Dashboard</Button>
               </Link>
               <Link
                 href={`/${user.username}`}
@@ -195,10 +193,7 @@ function Navbar({ user }: NavbarProps) {
                   </span>
                 </div>
                 <Link href="/dashboard" passHref>
-                  <Button
-                    variant="outline"
-                    className="rounded-full text-xs h-8"
-                  >
+                  <Button variant="outline" className="text-xs h-8">
                     Dashboard
                   </Button>
                 </Link>
