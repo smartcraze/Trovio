@@ -30,7 +30,7 @@ type PlatformKey =
     | "tiktok"
     | "website";
 
-const ICON_SIZE = 18;
+const ICON_SIZE = 24;
 
 function getPlatformIcon(platform: string): React.ReactNode | null {
     switch (platform as PlatformKey) {

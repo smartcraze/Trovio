@@ -81,7 +81,7 @@ export function ProfilePage({ user, theme }: ProfilePageProps) {
                 aria-hidden="true"
             />
             <div className={theme.glowClass} aria-hidden="true" />
-            <ProfileDecorations />
+            <ProfileDecorations themeId={theme.id} />
 
             <motion.div
                 variants={containerVariants}

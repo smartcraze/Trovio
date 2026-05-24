@@ -66,14 +66,14 @@ export function ProfileHeader({ user, theme }: ProfileHeaderProps) {
                 duration: motionTokens.duration.normal,
                 ease: motionTokens.easing.smooth,
             }}
-            className="flex items-center gap-6"
+            className="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left"
         >
             <ProfileAvatar avatarUrl={user.avatarUrl} name={user.name} size={96} />
 
             <div className="min-w-0">
                 <h1
                     className={cn(
-                        "text-3xl sm:text-4xl tracking-tight mb-1",
+                        "text-2xl sm:text-4xl tracking-tight mb-1",
                         theme.textPrimary,
                     )}
                 >

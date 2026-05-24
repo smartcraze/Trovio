@@ -41,11 +41,11 @@ export function ProductCard({ product, theme, variants }: ProductCardProps) {
                 ease: motionTokens.easing.smooth,
             }}
             className={cn(
-                "rounded-2xl p-4 flex items-center gap-4",
+                "rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center gap-4",
                 theme.cardClass,
             )}
         >
-            <div className="relative h-20 w-28 rounded-xl overflow-hidden bg-white/5">
+            <div className="relative h-24 w-full sm:h-20 sm:w-28 rounded-xl overflow-hidden bg-white/5">
                 {product.imageUrl ? (
                     <img
                         src={product.imageUrl}
@@ -59,7 +59,7 @@ export function ProductCard({ product, theme, variants }: ProductCardProps) {
                 )}
             </div>
 
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 w-full">
                 <div className="flex items-center justify-between gap-3">
                     <h3 className="text-sm font-semibold truncate">{product.title}</h3>
                     <span className={cn("text-xs font-semibold", theme.priceClass)}>
@@ -82,7 +82,8 @@ export function ProductCard({ product, theme, variants }: ProductCardProps) {
                     ease: motionTokens.easing.sharp,
                 }}
                 className={cn(
-                    "px-4 py-2 rounded-full text-[11px] font-semibold shrink-0",
+                    "px-4 py-2 rounded-full text-[11px] font-semibold",
+                    "w-full sm:w-auto text-center",
                     theme.buttonClass,
                 )}
             >
