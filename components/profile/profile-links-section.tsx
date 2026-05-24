@@ -6,7 +6,6 @@
 
 import { ExternalLink, Link2, Smartphone } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
-import React from "react";
 import { trackClickAction } from "@/lib/actions";
 import { triggerDeepLink } from "@/lib/deeplinks";
 import { motionTokens } from "@/lib/motionTokens";
@@ -102,7 +101,11 @@ export function ProfileLinksSection({
                         </div>
 
                         <span className="flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full bg-white/10 border border-white/10">
-                            {link.isDeepLink ? <Smartphone size={12} /> : <ExternalLink size={12} />}
+                            {link.isDeepLink ? (
+                                <Smartphone size={12} />
+                            ) : (
+                                <ExternalLink size={12} />
+                            )}
                             {link.isDeepLink ? "App" : "External"}
                         </span>
                     </motion.a>

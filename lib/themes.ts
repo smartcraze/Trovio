@@ -109,8 +109,7 @@ export const THEMES: Record<string, IThemeConfig> = {
     id: "anime-sakura",
     name: "アニメ Anime Sakura",
     emoji: "🎌",
-    bgClass:
-      "bg-[#1a1b28] text-white min-h-screen relative overflow-hidden",
+    bgClass: "bg-[#1a1b28] text-white min-h-screen relative overflow-hidden",
     fontClass: "font-sans",
     glowClass:
       "absolute top-[-5%] left-[-8%] w-[70%] h-[55%] bg-[#e76f51]/[0.18] rounded-full blur-[150px] pointer-events-none",
@@ -193,7 +192,8 @@ export const THEMES: Record<string, IThemeConfig> = {
     id: "lofi-coffee",
     name: "LoFi Coffee",
     emoji: "☕",
-    bgClass: "bg-[#141b14] text-[#faf9f6] min-h-screen relative overflow-hidden",
+    bgClass:
+      "bg-[#141b14] text-[#faf9f6] min-h-screen relative overflow-hidden",
     fontClass: "font-sans",
     glowClass:
       "absolute top-[20%] right-[0%] w-[50%] h-[50%] bg-[#7d8471]/20 rounded-full blur-[150px] pointer-events-none",
@@ -220,7 +220,8 @@ export const THEMES: Record<string, IThemeConfig> = {
     id: "neon-ocean",
     name: "Neon Ocean",
     emoji: "🌊",
-    bgClass: "bg-[#0e1722] text-[#f1faee] min-h-screen relative overflow-hidden",
+    bgClass:
+      "bg-[#0e1722] text-[#f1faee] min-h-screen relative overflow-hidden",
     fontClass: "font-sans",
     glowClass:
       "absolute bottom-[-10%] left-[15%] w-[60%] h-[60%] bg-[#2d8b8b]/25 rounded-full blur-[160px] pointer-events-none",

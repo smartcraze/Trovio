@@ -5,7 +5,6 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import React from "react";
 import { motionTokens } from "@/lib/motionTokens";
 import { cn } from "@/lib/utils";
 

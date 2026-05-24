@@ -41,7 +41,6 @@ export default function LinkCard({
   username,
   link,
   accentClass,
-  accentBarClass = "bg-white/30",
   size = "default",
 }: LinkCardProps) {
   const reduce = useReducedMotion();
@@ -109,7 +108,9 @@ export default function LinkCard({
             "flex items-center gap-1 rounded-full bg-white/10 border border-white/10 font-medium",
             isCompact ? "text-[9px] px-2 py-0.5" : "text-[10px] px-2.5 py-0.5",
           )}
-          title={link.isDeepLink ? "Opens natively in the app" : "Opens in browser"}
+          title={
+            link.isDeepLink ? "Opens natively in the app" : "Opens in browser"
+          }
         >
           {link.isDeepLink ? (
             <Smartphone size={isCompact ? 10 : 12} />

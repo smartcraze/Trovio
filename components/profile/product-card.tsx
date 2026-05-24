@@ -6,7 +6,6 @@
 
 import { ShoppingBag } from "lucide-react";
 import { motion, useReducedMotion, type Variants } from "motion/react";
-import React from "react";
 import { motionTokens } from "@/lib/motionTokens";
 import { cn } from "@/lib/utils";
 

@@ -6,7 +6,6 @@
 
 import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
-import React from "react";
 import { BrandLogo } from "@/components/brand-logo";
 import { motionTokens } from "@/lib/motionTokens";
 import { cn } from "@/lib/utils";
