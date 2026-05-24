@@ -26,11 +26,10 @@ interface BrandLogoProps {
  * automatically when the user switches themes.
  */
 const LOGO_MAP = {
-  white: "/logo-dark.png",   // dark-ink logo for LIGHT backgrounds
-  dark: "/logo-white.png",   // white-ink logo for DARK backgrounds
+  white: "/logo-dark.png", // dark-ink logo for LIGHT backgrounds
+  dark: "/logo-white.png", // white-ink logo for DARK backgrounds
   default: "/logo.png",
 } as const;
-
 
 export function BrandLogo({
   variant = "dynamic",

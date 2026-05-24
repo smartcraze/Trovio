@@ -1,6 +1,8 @@
 import {
   ArrowRight,
   ChevronRight,
+  ShoppingBag,
+  Smartphone,
   TrendingUp,
 } from "lucide-react";
 import Link from "next/link";
@@ -277,14 +279,14 @@ export default async function HomePage() {
           </p>
 
           <Link href="/register">
-            <Button >
+            <Button>
               Get Started for Free <ArrowRight size={16} />
             </Button>
           </Link>
         </div>
-      </section >
+      </section>
 
-      < footer className="border-t border-border py-12 relative z-10 bg-background" >
+      <footer className="border-t border-border py-12 relative z-10 bg-background">
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-6 text-muted-foreground text-sm">
           <div className="flex items-center gap-3">
             <BrandLogo variant="dynamic" width={100} height={30} />
@@ -302,7 +304,7 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
-      </footer >
-    </div >
+      </footer>
+    </div>
   );
 }

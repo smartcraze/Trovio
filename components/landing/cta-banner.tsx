@@ -12,11 +12,14 @@ export function LandingCtaBanner() {
 
   return (
     <section className="max-w-6xl mx-auto px-4 py-20 relative z-10 font-sans">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: reduce ? 0 : motionTokens.distance.lg }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: motionTokens.duration.normal, ease: motionTokens.easing.smooth }}
+        transition={{
+          duration: motionTokens.duration.normal,
+          ease: motionTokens.easing.smooth,
+        }}
         className="relative rounded-2xl bg-linear-to-br from-primary/10 via-secondary/15 to-transparent border border-border p-8 sm:p-16 text-center overflow-hidden"
       >
         {/* Glow Effect */}
@@ -26,7 +29,8 @@ export function LandingCtaBanner() {
           Ready to claim your spot?
         </h2>
         <p className="text-muted-foreground text-base sm:text-lg max-w-md mx-auto leading-relaxed mb-8">
-          Create your Trivio page in under 2 minutes. Start sharing links, launching native apps, and selling courses.
+          Create your Trivio page in under 2 minutes. Start sharing links,
+          launching native apps, and selling courses.
         </p>
 
         <Link href="/register" passHref>

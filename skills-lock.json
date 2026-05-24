@@ -1,11 +1,35 @@
 {
   "version": 1,
   "skills": {
+    "liquid-theme-standards": {
+      "source": "benjaminsehl/liquid-skills",
+      "sourceType": "github",
+      "skillPath": "skills/liquid-theme-standards/SKILL.md",
+      "computedHash": "bdefa886c67239815efa2a303188f508936f8474c8e768b53a97e197544411d5"
+    },
     "motion-ui": {
       "source": "affaan-m/everything-claude-code",
       "sourceType": "github",
       "skillPath": "skills/motion-ui/SKILL.md",
       "computedHash": "147121345905d7a81a57ecf240491c52151346c4eb9107f4f1b89acc373fade6"
+    },
+    "next-best-practices": {
+      "source": "vercel-labs/next-skills",
+      "sourceType": "github",
+      "skillPath": "skills/next-best-practices/SKILL.md",
+      "computedHash": "f4678aef4ffc10a5ea64a91e57abe5a5081af813b06d58d565caf3e8ef56e26c"
+    },
+    "tailwind-theme-builder": {
+      "source": "jezweb/claude-skills",
+      "sourceType": "github",
+      "skillPath": "plugins/frontend/skills/tailwind-theme-builder/SKILL.md",
+      "computedHash": "e8a9ac674406de2e6db9cbb09107a4d4e4ce02debbf556a4251bea73add0da12"
+    },
+    "theme-factory": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/theme-factory/SKILL.md",
+      "computedHash": "e9ec1fe85faa729e9f3d1731cd7e4e485f98c099ccc7c1c0d198f473aa4b654a"
     }
   }
 }

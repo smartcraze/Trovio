@@ -1,85 +1,89 @@
 /**
  * products-showcase.tsx
- * Staggered grid of ProductCard components.
- * Returns null when the products array is empty.
+ * Vertical list of product cards.
  */
 "use client";
 
-import React from "react";
-import { motion, useReducedMotion } from "motion/react";
 import { ShoppingBag } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import React from "react";
 import { motionTokens } from "@/lib/motionTokens";
-import { ProductCard, type Product } from "./product-card";
+import { type Product, ProductCard } from "./product-card";
 
 interface ProductsShowcaseProps {
-  products: Product[];
-  theme: {
-    cardClass: string;
-    buttonClass: string;
-    priceClass: string;
-    sectionHeaderClass: string;
-  };
+    products: Product[];
+    theme: {
+        cardClass: string;
+        buttonClass: string;
+        priceClass: string;
+        sectionHeaderClass: string;
+    };
+    maxItems?: number;
 }
 
-/** Stagger container — children animate in with 0.08 s offset */
 const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08 },
-  },
+    hidden: { opacity: 0 },
+    show: {
+        opacity: 1,
+        transition: { staggerChildren: 0.08 },
+    },
 };
 
-/** Each card slides up from below */
 const item = (reduce: boolean) => ({
-  hidden: { opacity: 0, y: reduce ? 0 : motionTokens.distance.md },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: motionTokens.duration.normal,
-      ease: motionTokens.easing.smooth,
+    hidden: { opacity: 0, y: reduce ? 0 : motionTokens.distance.sm },
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: motionTokens.duration.normal,
+            ease: motionTokens.easing.smooth,
+        },
     },
-  },
 });
 
-export function ProductsShowcase({ products, theme }: ProductsShowcaseProps) {
-  const reduce = useReducedMotion();
+export function ProductsShowcase({
+    products,
+    theme,
+    maxItems = 3,
+}: ProductsShowcaseProps) {
+    const reduce = useReducedMotion();
+    if (!products || products.length === 0) return null;
 
-  if (!products || products.length === 0) return null;
+    const visibleProducts = products.slice(0, maxItems);
+    const hiddenCount = Math.max(products.length - visibleProducts.length, 0);
 
-  return (
-    <div className="mb-10 space-y-5">
-      {/* Section header */}
-      <h2
-        className={`flex items-center gap-2 px-1 ${theme.sectionHeaderClass}`}
-      >
-        <ShoppingBag size={13} />
-        Shop Courses &amp; Products
-      </h2>
+    return (
+        <div className="space-y-4">
+            <div className="flex items-center gap-2 px-1">
+                <ShoppingBag size={13} />
+                <span className={theme.sectionHeaderClass}>
+                    Shop Courses &amp; Products
+                </span>
+            </div>
 
-      {/* Card grid — 1 col on mobile, up to 2 on sm+ if there are ≥2 products */}
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className={
-          products.length === 1
-            ? "grid grid-cols-1 gap-5"
-            : "grid grid-cols-1 sm:grid-cols-2 gap-5"
-        }
-      >
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            theme={theme}
-            variants={item(!!reduce)}
-          />
-        ))}
-      </motion.div>
-    </div>
-  );
+            <motion.div
+                variants={container}
+                initial="hidden"
+                animate="show"
+                className="space-y-4"
+            >
+                {visibleProducts.map((product) => (
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                        theme={theme}
+                        variants={item(!!reduce)}
+                    />
+                ))}
+            </motion.div>
+
+            {hiddenCount > 0 && (
+                <p className="text-[10px] uppercase tracking-[0.2em] opacity-60 px-1">
+                    +{hiddenCount} more products
+                </p>
+            )}
+        </div>
+    );
 }
 
 export default ProductsShowcase;

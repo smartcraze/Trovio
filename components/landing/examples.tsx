@@ -4,7 +4,13 @@ import React from "react";
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
 import { ChevronRight } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
 import { motionTokens } from "@/lib/motionTokens";
 
 interface Creator {
@@ -34,13 +40,13 @@ export function LandingExamples({ creators }: LandingExamplesProps) {
 
   const itemVariants = {
     hidden: { opacity: 0, y: reduce ? 0 : motionTokens.distance.md },
-    show: { 
-      opacity: 1, 
-      y: 0, 
-      transition: { 
-        duration: motionTokens.duration.normal, 
-        ease: motionTokens.easing.smooth 
-      } 
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: motionTokens.duration.normal,
+        ease: motionTokens.easing.smooth,
+      },
     },
   };
 
@@ -54,7 +60,10 @@ export function LandingExamples({ creators }: LandingExamplesProps) {
           initial={{ opacity: 0, y: reduce ? 0 : motionTokens.distance.sm }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: motionTokens.duration.normal, ease: motionTokens.easing.smooth }}
+          transition={{
+            duration: motionTokens.duration.normal,
+            ease: motionTokens.easing.smooth,
+          }}
           className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight"
         >
           Explore Live Profiles
@@ -63,10 +72,15 @@ export function LandingExamples({ creators }: LandingExamplesProps) {
           initial={{ opacity: 0, y: reduce ? 0 : motionTokens.distance.sm }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: motionTokens.duration.normal, ease: motionTokens.easing.smooth, delay: 0.08 }}
+          transition={{
+            duration: motionTokens.duration.normal,
+            ease: motionTokens.easing.smooth,
+            delay: 0.08,
+          }}
           className="text-muted-foreground text-sm sm:text-base mt-3 max-w-md mx-auto leading-relaxed"
         >
-          Click to view how real creators organize their presence and customize their profile styles.
+          Click to view how real creators organize their presence and customize
+          their profile styles.
         </motion.p>
       </div>
 

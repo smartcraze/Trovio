@@ -278,7 +278,9 @@ export default function DashboardClient({ user }: DashboardClientProps) {
 
             <Link href={`/${user.username}`} target="_blank">
               <Button variant="default" size="sm">
-                <Eye size={16} />{"trivio/"}{user.username}
+                <Eye size={16} />
+                {"trivio/"}
+                {user.username}
               </Button>
             </Link>
 
@@ -982,8 +984,8 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                       const percentage =
                         totalClicks > 0
                           ? Math.round(
-                            ((link.clickCount || 0) / totalClicks) * 100,
-                          )
+                              ((link.clickCount || 0) / totalClicks) * 100,
+                            )
                           : 0;
                       return (
                         <div key={link.id} className="space-y-2">

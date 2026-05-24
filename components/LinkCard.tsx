@@ -15,13 +15,13 @@
  */
 "use client";
 
-import React from "react";
+import { ExternalLink, Link2, Smartphone } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
+import type React from "react";
 import { trackClickAction } from "@/lib/actions";
 import { triggerDeepLink } from "@/lib/deeplinks";
-import { ExternalLink, Smartphone } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { motionTokens } from "@/lib/motionTokens";
+import { cn } from "@/lib/utils";
 
 interface LinkCardProps {
   username: string;
@@ -34,6 +34,7 @@ interface LinkCardProps {
   accentClass: string;
   /** Tailwind bg class for the left accent bar, e.g. "bg-violet-500" */
   accentBarClass?: string;
+  size?: "default" | "compact";
 }
 
 export default function LinkCard({
@@ -41,8 +42,10 @@ export default function LinkCard({
   link,
   accentClass,
   accentBarClass = "bg-white/30",
+  size = "default",
 }: LinkCardProps) {
   const reduce = useReducedMotion();
+  const isCompact = size === "compact";
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -54,6 +57,8 @@ export default function LinkCard({
 
     triggerDeepLink(link.url, link.isDeepLink);
   };
+
+  const actionLabel = link.isDeepLink ? "App" : "External Link";
 
   return (
     <motion.a
@@ -69,41 +74,50 @@ export default function LinkCard({
         // Layout
         "flex items-center justify-between gap-3 w-full group relative overflow-hidden",
         // Spacing + shape
-        "pl-0 pr-5 py-4 rounded-xl",
+        isCompact ? "pl-3 pr-3 py-2 rounded-lg" : "pl-4 pr-4 py-3 rounded-xl",
         // Glass card from theme
         accentClass,
         // Elevation
-        "shadow-md",
+        isCompact ? "shadow-sm" : "shadow-md",
       )}
     >
-      {/* Left accent bar — 3px coloured strip */}
-      <div
-        className={cn("w-[3px] self-stretch rounded-r-full shrink-0", accentBarClass)}
-        aria-hidden="true"
-      />
-
       {/* Main label */}
-      <div className="flex items-center gap-3 flex-1 min-w-0 pl-3">
-        <span className="font-medium text-sm sm:text-base truncate">
+      <div className="flex items-center gap-3 flex-1 min-w-0">
+        <div
+          className={cn(
+            "size-8 rounded-lg flex items-center justify-center",
+            "bg-white/10 border border-white/10",
+          )}
+          aria-hidden="true"
+        >
+          <Link2 size={14} />
+        </div>
+        <span
+          className={cn(
+            "font-medium truncate",
+            isCompact ? "text-[12px]" : "text-sm sm:text-base",
+          )}
+        >
           {link.title}
         </span>
       </div>
 
       {/* Right side — badges + icon */}
-      <div className="flex items-center gap-2 opacity-60 group-hover:opacity-100 transition-opacity shrink-0">
-        {link.isDeepLink && (
-          <span
-            className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-white/10 border border-white/10 font-medium"
-            title="Opens natively in the app"
-          >
-            <Smartphone size={11} />
-            App
-          </span>
-        )}
-        <ExternalLink
-          size={15}
-          className="transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-150"
-        />
+      <div className="flex items-center gap-2 opacity-80 group-hover:opacity-100 transition-opacity shrink-0">
+        <span
+          className={cn(
+            "flex items-center gap-1 rounded-full bg-white/10 border border-white/10 font-medium",
+            isCompact ? "text-[9px] px-2 py-0.5" : "text-[10px] px-2.5 py-0.5",
+          )}
+          title={link.isDeepLink ? "Opens natively in the app" : "Opens in browser"}
+        >
+          {link.isDeepLink ? (
+            <Smartphone size={isCompact ? 10 : 12} />
+          ) : (
+            <ExternalLink size={isCompact ? 10 : 12} />
+          )}
+          {actionLabel}
+        </span>
       </div>
     </motion.a>
   );
