@@ -13,11 +13,24 @@ interface BrandLogoProps {
   noLink?: boolean;
 }
 
+/**
+ * LOGO_MAP — intentionally "inverted" naming:
+ *
+ *  variant="white" → /logo-dark.png   dark-ink logo (use on LIGHT backgrounds)
+ *  variant="dark"  → /logo-white.png  white-ink logo (use on DARK backgrounds)
+ *  variant="dynamic" (default) — renders BOTH images and CSS-toggles them:
+ *      • /logo-white.png  visible in light mode  (block dark:hidden)
+ *      • /logo-dark.png   visible in dark  mode  (hidden dark:block)
+ *
+ * TL;DR — always prefer variant="dynamic" so the correct logo shows
+ * automatically when the user switches themes.
+ */
 const LOGO_MAP = {
-  white: "/logo-dark.png",
-  dark: "/logo-white.png",
+  white: "/logo-dark.png",   // dark-ink logo for LIGHT backgrounds
+  dark: "/logo-white.png",   // white-ink logo for DARK backgrounds
   default: "/logo.png",
 } as const;
+
 
 export function BrandLogo({
   variant = "dynamic",

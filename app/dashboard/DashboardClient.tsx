@@ -1,30 +1,39 @@
 "use client";
 
-import React, { useState, useEffect, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import {
-  ResponsiveContainer,
-  BarChart,
+  AlertCircle,
+  BarChart3,
+  Check,
+  Edit2,
+  ExternalLink,
+  Eye,
+  Link2,
+  Loader2,
+  LogOut,
+  Palette,
+  Plus,
+  Save,
+  ShoppingBag,
+  Smartphone,
+  Trash2,
+  User as UserIcon,
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import type React from "react";
+import { useEffect, useState, useTransition } from "react";
+import {
   Bar,
+  BarChart,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  Tooltip,
-  Cell,
-  PieChart,
-  Pie,
 } from "recharts";
-import {
-  updateProfileAction,
-  updateThemeAction,
-  addLinkAction,
-  editLinkAction,
-  deleteLinkAction,
-  addProductAction,
-  editProductAction,
-  deleteProductAction,
-  logoutAction,
-} from "@/lib/actions";
-import { THEMES } from "@/lib/themes";
+import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -33,36 +42,29 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
-import { BrandLogo } from "@/components/brand-logo";
-import {
-  User as UserIcon,
-  Link2,
-  ShoppingBag,
-  Palette,
-  BarChart3,
-  Plus,
-  Trash2,
-  Edit2,
-  Save,
-  LogOut,
-  ExternalLink,
-  Eye,
-  Check,
-  Smartphone,
-  AlertCircle,
-  Loader2,
-} from "lucide-react";
+  addLinkAction,
+  addProductAction,
+  deleteLinkAction,
+  deleteProductAction,
+  editLinkAction,
+  editProductAction,
+  logoutAction,
+  updateProfileAction,
+  updateThemeAction,
+} from "@/lib/actions";
+import { THEMES } from "@/lib/themes";
 import { cn } from "@/lib/utils";
 
 interface DashboardClientProps {
@@ -228,7 +230,8 @@ export default function DashboardClient({ user }: DashboardClientProps) {
 
   // Recharts calculations
   const chartData = user.links.map((link: any) => ({
-    name: link.title.length > 15 ? link.title.substring(0, 15) + "..." : link.title,
+    name:
+      link.title.length > 15 ? link.title.substring(0, 15) + "..." : link.title,
     fullName: link.title,
     clicks: link.clickCount || 0,
     url: link.url,
@@ -249,32 +252,41 @@ export default function DashboardClient({ user }: DashboardClientProps) {
       <div className="absolute top-[0%] right-[10%] w-[450px] h-[450px] bg-secondary/5 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-[20%] left-[-10%] w-[350px] h-[350px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
 
-      {/* Top Header Navigation */}
+      {/* ────────────────────────────────────────────────────────────────
+          Dashboard Top Header
+          - BrandLogo uses variant="dynamic" so it automatically switches:
+              • light mode → logo-white.png  (block dark:hidden)
+              • dark  mode → logo-dark.png   (hidden dark:block)
+          NOTE: the variant naming in brand-logo.tsx is intentionally
+          "inverted" relative to the image file names:
+              variant="white" → /logo-dark.png   (dark ink, for light bg)
+              variant="dark"  → /logo-white.png  (white ink, for dark bg)
+          Always use variant="dynamic" here so it adapts automatically.
+      ──────────────────────────────────────────────────────────────── */}
       <header className="border-b border-border bg-card/50 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <BrandLogo variant="white" width={100} height={30} />
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-muted border border-border text-muted-foreground font-mono">
+            {/* dynamic variant = correct logo for both light and dark mode */}
+            <BrandLogo variant="dynamic" width={100} height={30} />
+            <span className="text-xs px-2.5 py-0.5 rounded bg-muted border border-border text-muted-foreground font-mono">
               Dashboard
             </span>
           </div>
 
-          <div className="flex items-center gap-4">
-            <a
-              href={`/${user.username}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs sm:text-sm text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition"
-            >
-              <Eye size={16} />{" "}
-              <span className="hidden sm:inline">trivio/</span>
-              {user.username}
-            </a>
+          <div className="flex items-center gap-3">
+            {/* Profile page link — opens in new tab */}
+
+            <Link href={`/${user.username}`} target="_blank">
+              <Button variant="default" size="sm">
+                <Eye size={16} />{"trivio/"}{user.username}
+              </Button>
+            </Link>
+
             <Button
               onClick={handleLogout}
-              variant="ghost"
+              variant="destructive"
               size="sm"
-              className="text-destructive hover:text-destructive hover:bg-destructive/10 flex items-center gap-1.5 rounded-full"
+              className="text-destructive hover:text-destructive hover:bg-destructive/10 flex items-center gap-1.5 rounded"
             >
               <LogOut size={16} />{" "}
               <span className="hidden sm:inline">Logout</span>
@@ -818,30 +830,43 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                       ) : chartMounted ? (
                         <div className="h-[300px] w-full mt-4">
                           <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                              <XAxis 
-                                dataKey="name" 
-                                stroke="var(--muted-foreground)" 
-                                fontSize={10} 
-                                tickLine={false} 
-                                axisLine={false} 
+                            <BarChart
+                              data={chartData}
+                              margin={{
+                                top: 10,
+                                right: 10,
+                                left: -25,
+                                bottom: 0,
+                              }}
+                            >
+                              <XAxis
+                                dataKey="name"
+                                stroke="var(--muted-foreground)"
+                                fontSize={10}
+                                tickLine={false}
+                                axisLine={false}
                               />
-                              <YAxis 
-                                stroke="var(--muted-foreground)" 
-                                fontSize={10} 
-                                tickLine={false} 
-                                axisLine={false} 
+                              <YAxis
+                                stroke="var(--muted-foreground)"
+                                fontSize={10}
+                                tickLine={false}
+                                axisLine={false}
                                 tickFormatter={(val) => `${val}`}
                               />
-                              <Tooltip 
-                                cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+                              <Tooltip
+                                cursor={{ fill: "rgba(255,255,255,0.03)" }}
                                 content={({ active, payload }) => {
                                   if (active && payload && payload.length) {
                                     return (
                                       <div className="bg-card/95 border border-border p-2.5 rounded-lg shadow-xl backdrop-blur-md text-xs">
-                                        <p className="font-semibold text-foreground">{payload[0].payload.fullName}</p>
+                                        <p className="font-semibold text-foreground">
+                                          {payload[0].payload.fullName}
+                                        </p>
                                         <p className="text-muted-foreground mt-0.5">
-                                          Clicks: <span className="font-bold text-primary">{payload[0].value}</span>
+                                          Clicks:{" "}
+                                          <span className="font-bold text-primary">
+                                            {payload[0].value}
+                                          </span>
                                         </p>
                                       </div>
                                     );
@@ -851,14 +876,19 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                               />
                               <Bar dataKey="clicks" radius={[4, 4, 0, 0]}>
                                 {chartData.map((entry: any, index: number) => (
-                                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                  <Cell
+                                    key={`cell-${index}`}
+                                    fill={COLORS[index % COLORS.length]}
+                                  />
                                 ))}
                               </Bar>
                             </BarChart>
                           </ResponsiveContainer>
                         </div>
                       ) : (
-                        <div className="text-muted-foreground text-xs">Loading chart...</div>
+                        <div className="text-muted-foreground text-xs">
+                          Loading chart...
+                        </div>
                       )}
                     </CardContent>
                   </Card>
@@ -882,7 +912,9 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                           <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                               <Pie
-                                data={chartData.filter((d: any) => d.clicks > 0)}
+                                data={chartData.filter(
+                                  (d: any) => d.clicks > 0,
+                                )}
                                 cx="50%"
                                 cy="50%"
                                 innerRadius={60}
@@ -890,18 +922,28 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                                 paddingAngle={4}
                                 dataKey="clicks"
                               >
-                                {chartData.filter((d: any) => d.clicks > 0).map((entry: any, index: number) => (
-                                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                ))}
+                                {chartData
+                                  .filter((d: any) => d.clicks > 0)
+                                  .map((entry: any, index: number) => (
+                                    <Cell
+                                      key={`cell-${index}`}
+                                      fill={COLORS[index % COLORS.length]}
+                                    />
+                                  ))}
                               </Pie>
-                              <Tooltip 
+                              <Tooltip
                                 content={({ active, payload }) => {
                                   if (active && payload && payload.length) {
                                     return (
                                       <div className="bg-card/95 border border-border p-2.5 rounded-lg shadow-xl backdrop-blur-md text-xs">
-                                        <p className="font-semibold text-foreground">{payload[0].name}</p>
+                                        <p className="font-semibold text-foreground">
+                                          {payload[0].name}
+                                        </p>
                                         <p className="text-muted-foreground mt-0.5">
-                                          Clicks: <span className="font-bold text-secondary">{payload[0].value}</span>
+                                          Clicks:{" "}
+                                          <span className="font-bold text-secondary">
+                                            {payload[0].value}
+                                          </span>
                                         </p>
                                       </div>
                                     );
@@ -913,7 +955,9 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                           </ResponsiveContainer>
                         </div>
                       ) : (
-                        <div className="text-muted-foreground text-xs">Loading chart...</div>
+                        <div className="text-muted-foreground text-xs">
+                          Loading chart...
+                        </div>
                       )}
                     </CardContent>
                   </Card>
@@ -938,8 +982,8 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                       const percentage =
                         totalClicks > 0
                           ? Math.round(
-                              ((link.clickCount || 0) / totalClicks) * 100,
-                            )
+                            ((link.clickCount || 0) / totalClicks) * 100,
+                          )
                           : 0;
                       return (
                         <div key={link.id} className="space-y-2">
