@@ -52,7 +52,7 @@ export default function RegisterPage() {
       <div className="absolute top-[10%] right-[10%] w-[350px] h-[350px] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-[10%] left-[10%] w-[350px] h-[350px] bg-secondary/10 rounded-full blur-[100px] pointer-events-none" />
 
-      <Card className="w-full max-w-md border-border bg-card/60 backdrop-blur-2xl p-4 shadow-2xl relative z-10 rounded-[28px]">
+      <Card className="w-full max-w-md border-border bg-card/60 backdrop-blur-2xl p-4 shadow-2xl relative z-10 rounded-2xl">
         <CardHeader className="text-center pb-2">
           <div className="flex justify-center mb-4">
             <BrandLogo variant="dynamic" width={130} height={38} />
@@ -90,7 +90,7 @@ export default function RegisterPage() {
                   type="text"
                   required
                   placeholder="Jane Doe"
-                  className="pl-10 h-12 rounded-[20px] bg-background/50 border-border focus-visible:ring-primary focus-visible:border-primary"
+                  className="pl-10 h-12 rounded-xl bg-background/50 border-border focus-visible:ring-primary focus-visible:border-primary"
                 />
               </div>
             </div>
@@ -112,7 +112,7 @@ export default function RegisterPage() {
                   type="text"
                   required
                   placeholder="username"
-                  className="pl-16 h-12 rounded-[20px] bg-background/50 border-border focus-visible:ring-primary focus-visible:border-primary"
+                  className="pl-16 h-12 rounded-xl bg-background/50 border-border focus-visible:ring-primary focus-visible:border-primary"
                 />
               </div>
               <p className="text-xs text-muted-foreground mt-1">
@@ -137,7 +137,7 @@ export default function RegisterPage() {
                   type="password"
                   required
                   placeholder="Min 6 characters"
-                  className="pl-10 h-12 rounded-[20px] bg-background/50 border-border focus-visible:ring-primary focus-visible:border-primary"
+                  className="pl-10 h-12 rounded-xl bg-background/50 border-border focus-visible:ring-primary focus-visible:border-primary"
                 />
               </div>
             </div>

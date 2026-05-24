@@ -1,10 +1,12 @@
 "use client";
 
 import React from "react";
+import { motion, useReducedMotion } from "motion/react";
 import { trackClickAction } from "@/lib/actions";
 import { triggerDeepLink } from "@/lib/deeplinks";
 import { ExternalLink, Smartphone } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motionTokens } from "@/lib/motionTokens";
 
 interface LinkCardProps {
   username: string;
@@ -22,6 +24,8 @@ export default function LinkCard({
   link,
   accentClass,
 }: LinkCardProps) {
+  const reduce = useReducedMotion();
+
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
 
@@ -35,12 +39,15 @@ export default function LinkCard({
   };
 
   return (
-    <a
+    <motion.a
       href={link.url}
       onClick={handleClick}
+      whileHover={reduce ? {} : { y: -2, scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: motionTokens.duration.fast, ease: motionTokens.easing.smooth }}
       className={cn(
-        "flex items-center justify-between p-4 rounded-[20px] transition-all duration-300 w-full group relative overflow-hidden",
-        accentClass,
+        "flex items-center justify-between p-4 rounded-xl transition-all duration-300 w-full group relative overflow-hidden shadow-md",
+        accentClass
       )}
     >
       <div className="flex items-center gap-3 relative z-10">
@@ -57,6 +64,6 @@ export default function LinkCard({
           className="transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
         />
       </div>
-    </a>
+    </motion.a>
   );
 }

@@ -1,8 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import React from "react";
+
 import { cn } from "@/lib/utils";
 
 interface BrandLogoProps {
+  variant?: "white" | "dark" | "default" | "dynamic";
   width?: number;
   height?: number;
   className?: string;
@@ -10,50 +13,58 @@ interface BrandLogoProps {
   noLink?: boolean;
 }
 
+const LOGO_MAP = {
+  white: "/logo-dark.png",
+  dark: "/logo-white.png",
+  default: "/logo.png",
+} as const;
+
 export function BrandLogo({
+  variant = "dynamic",
   width = 120,
   height = 36,
   className,
   path = "/",
   noLink = false,
 }: BrandLogoProps) {
-  const logo = (
-    <>
-      {/* Light Mode */}
-      <Image
-        src="/logo-white.png"
-        alt="Trivio Logo"
-        width={width}
-        height={height}
-        priority
-        className="block dark:hidden object-contain"
-      />
+  const imageProps = {
+    alt: "Trivio Logo",
+    width,
+    height,
+    priority: true,
+    className: "object-contain h-auto w-auto",
+    style: {
+      maxWidth: `${width}px`,
+    },
+  };
 
-      {/* Dark Mode */}
-      <Image
-        src="/logo-dark.png"
-        alt="Trivio Logo"
-        width={width}
-        height={height}
-        priority
-        className="hidden dark:block object-contain"
-      />
-    </>
-  );
+  const logo =
+    variant === "dynamic" ? (
+      <>
+        <Image
+          src="/logo-white.png"
+          {...imageProps}
+          className={cn(imageProps.className, "block dark:hidden")}
+        />
+
+        <Image
+          src="/logo-dark.png"
+          {...imageProps}
+          className={cn(imageProps.className, "hidden dark:block")}
+        />
+      </>
+    ) : (
+      <Image src={LOGO_MAP[variant]} {...imageProps} />
+    );
+
+  const wrapperClass = cn("inline-flex items-center", className);
 
   if (noLink) {
-    return (
-      <div className={cn("inline-flex items-center", className)}>
-        {logo}
-      </div>
-    );
+    return <span className={wrapperClass}>{logo}</span>;
   }
 
   return (
-    <Link
-      href={path}
-      className={cn("inline-flex items-center", className)}
-    >
+    <Link href={path} className={wrapperClass}>
       {logo}
     </Link>
   );

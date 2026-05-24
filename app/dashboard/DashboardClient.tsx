@@ -1,7 +1,18 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Cell,
+  PieChart,
+  Pie,
+} from "recharts";
 import {
   updateProfileAction,
   updateThemeAction,
@@ -62,6 +73,12 @@ export default function DashboardClient({ user }: DashboardClientProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<string>("profile");
   const [isPending, startTransition] = useTransition();
+  const [chartMounted, setChartMounted] = useState(false);
+
+  useEffect(() => {
+    setChartMounted(true);
+  }, []);
+
   const [feedback, setFeedback] = useState<{
     type: "success" | "error";
     message: string;
@@ -209,6 +226,23 @@ export default function DashboardClient({ user }: DashboardClientProps) {
     setLinkModal({ open: true, mode: "edit", data: link });
   };
 
+  // Recharts calculations
+  const chartData = user.links.map((link: any) => ({
+    name: link.title.length > 15 ? link.title.substring(0, 15) + "..." : link.title,
+    fullName: link.title,
+    clicks: link.clickCount || 0,
+    url: link.url,
+  }));
+  const hasClicks = chartData.some((d: any) => d.clicks > 0);
+  const COLORS = [
+    "var(--primary)",
+    "var(--secondary)",
+    "oklch(0.6693 0.0706 248.923)",
+    "oklch(0.6678 0.1546 41.62)",
+    "oklch(0.5957 0.1807 19.9763)",
+    "oklch(0.7859 0.1342 83.6986)",
+  ];
+
   return (
     <div className="min-h-screen bg-background text-foreground pb-20 relative overflow-hidden">
       {/* Decorative Glow */}
@@ -275,31 +309,31 @@ export default function DashboardClient({ user }: DashboardClientProps) {
           <TabsList className="flex flex-col items-stretch h-auto bg-transparent border-none p-0 gap-2 shrink-0 w-full md:w-56">
             <TabsTrigger
               value="profile"
-              className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all text-left data-[state=active]:bg-card data-[state=active]:text-foreground border border-transparent data-[state=active]:border-border shadow-sm text-muted-foreground cursor-pointer"
+              className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-left data-[state=active]:bg-card data-[state=active]:text-foreground border border-transparent data-[state=active]:border-border shadow-sm text-muted-foreground cursor-pointer"
             >
               <UserIcon size={18} /> Edit Profile
             </TabsTrigger>
             <TabsTrigger
               value="links"
-              className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all text-left data-[state=active]:bg-card data-[state=active]:text-foreground border border-transparent data-[state=active]:border-border shadow-sm text-muted-foreground cursor-pointer"
+              className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-left data-[state=active]:bg-card data-[state=active]:text-foreground border border-transparent data-[state=active]:border-border shadow-sm text-muted-foreground cursor-pointer"
             >
               <Link2 size={18} /> Manage Links
             </TabsTrigger>
             <TabsTrigger
               value="products"
-              className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all text-left data-[state=active]:bg-card data-[state=active]:text-foreground border border-transparent data-[state=active]:border-border shadow-sm text-muted-foreground cursor-pointer"
+              className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-left data-[state=active]:bg-card data-[state=active]:text-foreground border border-transparent data-[state=active]:border-border shadow-sm text-muted-foreground cursor-pointer"
             >
               <ShoppingBag size={18} /> Shop Products ({user.products.length}/3)
             </TabsTrigger>
             <TabsTrigger
               value="themes"
-              className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all text-left data-[state=active]:bg-card data-[state=active]:text-foreground border border-transparent data-[state=active]:border-border shadow-sm text-muted-foreground cursor-pointer"
+              className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-left data-[state=active]:bg-card data-[state=active]:text-foreground border border-transparent data-[state=active]:border-border shadow-sm text-muted-foreground cursor-pointer"
             >
               <Palette size={18} /> Custom Themes
             </TabsTrigger>
             <TabsTrigger
               value="analytics"
-              className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all text-left data-[state=active]:bg-card data-[state=active]:text-foreground border border-transparent data-[state=active]:border-border shadow-sm text-muted-foreground cursor-pointer"
+              className="w-full flex items-center justify-start gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all text-left data-[state=active]:bg-card data-[state=active]:text-foreground border border-transparent data-[state=active]:border-border shadow-sm text-muted-foreground cursor-pointer"
             >
               <BarChart3 size={18} /> Analytics
             </TabsTrigger>
@@ -309,7 +343,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
           <div className="flex-1 w-full min-w-0">
             {/* TAB: PROFILE */}
             <TabsContent value="profile" className="mt-0 outline-none">
-              <Card className="border-border bg-card/60 backdrop-blur-2xl p-6 sm:p-8 rounded-[28px] shadow-xl">
+              <Card className="border-border bg-card/60 backdrop-blur-2xl p-6 sm:p-8 rounded-xl shadow-xl">
                 <CardHeader className="p-0 mb-6">
                   <CardTitle className="text-xl font-bold text-foreground">
                     Profile Settings
@@ -335,7 +369,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                           type="text"
                           required
                           defaultValue={user.name}
-                          className="h-11 rounded-[16px] bg-background/50 border-border"
+                          className="h-11 rounded-lg bg-background/50 border-border"
                         />
                       </div>
 
@@ -352,7 +386,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                           type="url"
                           placeholder="https://images.unsplash.com/..."
                           defaultValue={user.avatarUrl}
-                          className="h-11 rounded-[16px] bg-background/50 border-border"
+                          className="h-11 rounded-lg bg-background/50 border-border"
                         />
                       </div>
                     </div>
@@ -371,7 +405,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                         defaultValue={user.bio}
                         rows={3}
                         placeholder="Tell your story..."
-                        className="w-full bg-background/50 border border-border rounded-[16px] p-4 text-foreground text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition resize-none"
+                        className="w-full bg-background/50 border border-border rounded-lg p-4 text-foreground text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition resize-none"
                       />
                     </div>
 
@@ -402,7 +436,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                               type="url"
                               placeholder={`https://${platform.id}.com/...`}
                               defaultValue={user.socials?.[platform.id] || ""}
-                              className="h-10 rounded-[12px] bg-background/50 border-border text-xs"
+                              className="h-10 rounded-lg bg-background/50 border-border text-xs"
                             />
                           </div>
                         ))}
@@ -446,7 +480,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
 
               <div className="space-y-4">
                 {user.links.length === 0 ? (
-                  <Card className="border-dashed border-border bg-card/40 rounded-[28px] text-center p-12 opacity-80">
+                  <Card className="border-dashed border-border bg-card/40 rounded-xl text-center p-12 opacity-80">
                     <CardContent className="p-0">
                       <p className="text-sm mb-4 text-muted-foreground">
                         No links added yet. Start by creating one!
@@ -463,7 +497,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                   user.links.map((link: any) => (
                     <Card
                       key={link.id}
-                      className="bg-card/40 border-border rounded-[20px] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 backdrop-blur-md hover:bg-card/70 transition-colors"
+                      className="bg-card/40 border-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 backdrop-blur-md hover:bg-card/70 transition-colors"
                     >
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
@@ -552,7 +586,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
               </div>
 
               {user.products.length >= 3 && (
-                <div className="p-4 bg-amber-500/10 border border-amber-500/25 text-amber-500 text-sm rounded-2xl flex gap-3">
+                <div className="p-4 bg-amber-500/10 border border-amber-500/25 text-amber-500 text-sm rounded-xl flex gap-3">
                   <AlertCircle
                     className="shrink-0 text-amber-500 mt-0.5"
                     size={16}
@@ -569,7 +603,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
 
               <div className="grid grid-cols-1 gap-4">
                 {user.products.length === 0 ? (
-                  <Card className="border-dashed border-border bg-card/40 rounded-[28px] text-center p-12 opacity-80">
+                  <Card className="border-dashed border-border bg-card/40 rounded-xl text-center p-12 opacity-80">
                     <CardContent className="p-0">
                       <p className="text-sm mb-4 text-muted-foreground">
                         No products listed. Add products to monetize your
@@ -589,7 +623,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                   user.products.map((product: any) => (
                     <Card
                       key={product.id}
-                      className="bg-card/40 border-border rounded-[24px] p-5 flex flex-col sm:flex-row gap-5 items-center justify-between backdrop-blur-md"
+                      className="bg-card/40 border-border rounded-xl p-5 flex flex-col sm:flex-row gap-5 items-center justify-between backdrop-blur-md"
                     >
                       <div className="flex items-center gap-4 w-full">
                         {product.imageUrl ? (
@@ -658,7 +692,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
 
             {/* TAB: THEMES */}
             <TabsContent value="themes" className="mt-0 outline-none">
-              <Card className="border-border bg-card/60 backdrop-blur-2xl p-6 sm:p-8 rounded-[28px] shadow-xl">
+              <Card className="border-border bg-card/60 backdrop-blur-2xl p-6 sm:p-8 rounded-xl shadow-xl">
                 <CardHeader className="p-0 mb-6">
                   <CardTitle className="text-xl font-bold text-foreground">
                     Pick a Profile Theme
@@ -678,7 +712,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                           onClick={() => handleSelectTheme(theme.id)}
                           disabled={isPending}
                           className={cn(
-                            "group p-5 rounded-[24px] text-left border transition relative overflow-hidden flex flex-col justify-between h-40",
+                            "group p-5 rounded-xl text-left border transition relative overflow-hidden flex flex-col justify-between h-40",
                             isActive
                               ? "border-primary bg-background/80 shadow-[0_0_25px_rgba(var(--primary),0.15)] ring-2 ring-primary/50"
                               : "border-border bg-background/40 hover:border-border/80 hover:bg-background/60",
@@ -731,12 +765,12 @@ export default function DashboardClient({ user }: DashboardClientProps) {
             {/* TAB: ANALYTICS */}
             <TabsContent
               value="analytics"
-              className="mt-0 outline-none space-y-8"
+              className="mt-0 outline-none space-y-8 animate-fade-in"
             >
               {/* Total Stats Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <Card className="border-border bg-card/60 backdrop-blur-2xl p-6 shadow-xl flex items-center gap-5 rounded-[28px]">
-                  <div className="size-14 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
+                <Card className="border-border bg-card/60 backdrop-blur-2xl p-6 shadow-xl flex items-center gap-5 rounded-xl">
+                  <div className="size-14 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
                     <BarChart3 size={24} />
                   </div>
                   <div>
@@ -749,8 +783,8 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                   </div>
                 </Card>
 
-                <Card className="border-border bg-card/60 backdrop-blur-2xl p-6 shadow-xl flex items-center gap-5 rounded-[28px]">
-                  <div className="size-14 rounded-2xl bg-secondary/10 border border-secondary/20 text-secondary flex items-center justify-center shrink-0">
+                <Card className="border-border bg-card/60 backdrop-blur-2xl p-6 shadow-xl flex items-center gap-5 rounded-xl">
+                  <div className="size-14 rounded-xl bg-secondary/10 border border-secondary/20 text-secondary flex items-center justify-center shrink-0">
                     <Link2 size={24} />
                   </div>
                   <div>
@@ -764,11 +798,133 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                 </Card>
               </div>
 
-              {/* Click breakdown */}
-              <Card className="border-border bg-card/60 backdrop-blur-2xl p-6 sm:p-8 shadow-xl rounded-[28px]">
+              {/* Charts Section */}
+              {user.links.length > 0 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <Card className="border-border bg-card/60 backdrop-blur-2xl p-6 shadow-xl rounded-xl">
+                    <CardHeader className="p-0 mb-4">
+                      <CardTitle className="font-bold text-sm text-foreground uppercase tracking-wider">
+                        Clicks Breakdown
+                      </CardTitle>
+                      <CardDescription className="text-xs text-muted-foreground">
+                        Compare performance metrics across all active links.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0 flex items-center justify-center min-h-[300px]">
+                      {!hasClicks ? (
+                        <div className="text-center py-12 text-muted-foreground text-xs">
+                          No click data recorded yet.
+                        </div>
+                      ) : chartMounted ? (
+                        <div className="h-[300px] w-full mt-4">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                              <XAxis 
+                                dataKey="name" 
+                                stroke="var(--muted-foreground)" 
+                                fontSize={10} 
+                                tickLine={false} 
+                                axisLine={false} 
+                              />
+                              <YAxis 
+                                stroke="var(--muted-foreground)" 
+                                fontSize={10} 
+                                tickLine={false} 
+                                axisLine={false} 
+                                tickFormatter={(val) => `${val}`}
+                              />
+                              <Tooltip 
+                                cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+                                content={({ active, payload }) => {
+                                  if (active && payload && payload.length) {
+                                    return (
+                                      <div className="bg-card/95 border border-border p-2.5 rounded-lg shadow-xl backdrop-blur-md text-xs">
+                                        <p className="font-semibold text-foreground">{payload[0].payload.fullName}</p>
+                                        <p className="text-muted-foreground mt-0.5">
+                                          Clicks: <span className="font-bold text-primary">{payload[0].value}</span>
+                                        </p>
+                                      </div>
+                                    );
+                                  }
+                                  return null;
+                                }}
+                              />
+                              <Bar dataKey="clicks" radius={[4, 4, 0, 0]}>
+                                {chartData.map((entry: any, index: number) => (
+                                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                              </Bar>
+                            </BarChart>
+                          </ResponsiveContainer>
+                        </div>
+                      ) : (
+                        <div className="text-muted-foreground text-xs">Loading chart...</div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <Card className="border-border bg-card/60 backdrop-blur-2xl p-6 shadow-xl rounded-xl">
+                    <CardHeader className="p-0 mb-4">
+                      <CardTitle className="font-bold text-sm text-foreground uppercase tracking-wider">
+                        Traffic Distribution
+                      </CardTitle>
+                      <CardDescription className="text-xs text-muted-foreground">
+                        Visualizing relative share of user clicks.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-0 flex items-center justify-center min-h-[300px]">
+                      {!hasClicks ? (
+                        <div className="text-center py-12 text-muted-foreground text-xs">
+                          No click data recorded yet.
+                        </div>
+                      ) : chartMounted ? (
+                        <div className="h-[300px] w-full flex items-center justify-center mt-4">
+                          <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                              <Pie
+                                data={chartData.filter((d: any) => d.clicks > 0)}
+                                cx="50%"
+                                cy="50%"
+                                innerRadius={60}
+                                outerRadius={85}
+                                paddingAngle={4}
+                                dataKey="clicks"
+                              >
+                                {chartData.filter((d: any) => d.clicks > 0).map((entry: any, index: number) => (
+                                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                ))}
+                              </Pie>
+                              <Tooltip 
+                                content={({ active, payload }) => {
+                                  if (active && payload && payload.length) {
+                                    return (
+                                      <div className="bg-card/95 border border-border p-2.5 rounded-lg shadow-xl backdrop-blur-md text-xs">
+                                        <p className="font-semibold text-foreground">{payload[0].name}</p>
+                                        <p className="text-muted-foreground mt-0.5">
+                                          Clicks: <span className="font-bold text-secondary">{payload[0].value}</span>
+                                        </p>
+                                      </div>
+                                    );
+                                  }
+                                  return null;
+                                }}
+                              />
+                            </PieChart>
+                          </ResponsiveContainer>
+                        </div>
+                      ) : (
+                        <div className="text-muted-foreground text-xs">Loading chart...</div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
+              {/* Click breakdown list */}
+              <Card className="border-border bg-card/60 backdrop-blur-2xl p-6 sm:p-8 shadow-xl rounded-xl">
                 <CardHeader className="p-0 mb-6">
                   <CardTitle className="font-bold text-lg text-foreground">
-                    Click Performance
+                    Click Performance List
                   </CardTitle>
                 </CardHeader>
 
@@ -795,7 +951,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                               <span className="font-bold text-foreground">
                                 {link.clickCount || 0}
                               </span>{" "}
-                              clicks ({percentage})
+                              clicks ({percentage}%)
                             </span>
                           </div>
 
@@ -824,7 +980,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
           !isOpen && setLinkModal((prev) => ({ ...prev, open: false }))
         }
       >
-        <DialogContent className="max-w-lg bg-card border-border rounded-[28px] p-6 sm:p-8 shadow-2xl">
+        <DialogContent className="max-w-lg bg-card border-border rounded-xl p-6 sm:p-8 shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-foreground">
               {linkModal.mode === "add"
@@ -853,7 +1009,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                 defaultValue={
                   linkModal.mode === "edit" ? linkModal.data.title : ""
                 }
-                className="h-11 rounded-[16px] bg-background/50 border-border"
+                className="h-11 rounded-lg bg-background/50 border-border"
               />
             </div>
 
@@ -873,11 +1029,11 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                 defaultValue={
                   linkModal.mode === "edit" ? linkModal.data.url : ""
                 }
-                className="h-11 rounded-[16px] bg-background/50 border-border"
+                className="h-11 rounded-lg bg-background/50 border-border"
               />
             </div>
 
-            <div className="flex items-center justify-between p-4 rounded-[20px] bg-background/50 border border-border">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-background/50 border border-border">
               <div className="space-y-1 pr-4">
                 <span className="text-sm font-medium text-foreground flex items-center gap-1.5">
                   <Smartphone size={16} className="text-primary" /> Enable Deep
@@ -928,7 +1084,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
           !isOpen && setProductModal((prev) => ({ ...prev, open: false }))
         }
       >
-        <DialogContent className="max-w-lg bg-card border-border rounded-[28px] p-6 sm:p-8 shadow-2xl">
+        <DialogContent className="max-w-lg bg-card border-border rounded-xl p-6 sm:p-8 shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-foreground">
               {productModal.mode === "add"
@@ -958,7 +1114,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                   defaultValue={
                     productModal.mode === "edit" ? productModal.data.title : ""
                   }
-                  className="h-11 rounded-[16px] bg-background/50 border-border"
+                  className="h-11 rounded-lg bg-background/50 border-border"
                 />
               </div>
 
@@ -979,7 +1135,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                   defaultValue={
                     productModal.mode === "edit" ? productModal.data.price : ""
                   }
-                  className="h-11 rounded-[16px] bg-background/50 border-border"
+                  className="h-11 rounded-lg bg-background/50 border-border"
                 />
               </div>
             </div>
@@ -1003,7 +1159,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                     ? productModal.data.description
                     : ""
                 }
-                className="w-full bg-background/50 border border-border rounded-[16px] p-4 text-foreground text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition resize-none"
+                className="w-full bg-background/50 border border-border rounded-lg p-4 text-foreground text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition resize-none"
               />
             </div>
 
@@ -1022,7 +1178,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                 defaultValue={
                   productModal.mode === "edit" ? productModal.data.imageUrl : ""
                 }
-                className="h-11 rounded-[16px] bg-background/50 border-border"
+                className="h-11 rounded-lg bg-background/50 border-border"
               />
             </div>
 
@@ -1044,7 +1200,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
                     ? productModal.data.purchaseUrl
                     : ""
                 }
-                className="h-11 rounded-[16px] bg-background/50 border-border"
+                className="h-11 rounded-lg bg-background/50 border-border"
               />
             </div>
 

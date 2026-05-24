@@ -45,7 +45,7 @@ export default function LoginPage() {
       <div className="absolute top-[20%] left-[20%] w-[350px] h-[350px] bg-secondary/10 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-[20%] right-[20%] w-[350px] h-[350px] bg-primary/10 rounded-full blur-[100px] pointer-events-none" />
 
-      <Card className="w-full max-w-md border-border bg-card/60 backdrop-blur-2xl p-4 shadow-2xl relative z-10 rounded-[28px]">
+      <Card className="w-full max-w-md border-border bg-card/60 backdrop-blur-2xl p-4 shadow-2xl relative z-10 rounded-2xl">
         <CardHeader className="text-center pb-2">
           <div className="flex justify-center mb-4">
             <BrandLogo variant="dynamic" width={130} height={38} />
@@ -83,7 +83,7 @@ export default function LoginPage() {
                   type="text"
                   required
                   placeholder="username"
-                  className="pl-10 h-12 rounded-[20px] bg-background/50 border-border focus-visible:ring-primary focus-visible:border-primary"
+                  className="pl-10 h-12 rounded-xl bg-background/50 border-border focus-visible:ring-primary focus-visible:border-primary"
                 />
               </div>
             </div>
@@ -105,7 +105,7 @@ export default function LoginPage() {
                   type="password"
                   required
                   placeholder="••••••••"
-                  className="pl-10 h-12 rounded-[20px] bg-background/50 border-border focus-visible:ring-primary focus-visible:border-primary"
+                  className="pl-10 h-12 rounded-xl bg-background/50 border-border focus-visible:ring-primary focus-visible:border-primary"
                 />
               </div>
             </div>
