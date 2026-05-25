@@ -1,23 +1,20 @@
 /**
  * LinkCard.tsx
- * A single interactive link card with:
- *  - A 3px left accent bar (theme colour)
- *  - Glass background (provided by accentClass from theme)
- *  - Lift + slight scale on hover
- *  - Deep-link badge for app-scheme URLs
- *  - Click tracking + deep-link trigger
- *
- * Props:
- *  username      — user's handle (for analytics tracking)
- *  link          — { id, title, url, isDeepLink }
- *  accentClass   — glass bg + border + text colour from IThemeConfig
- *  accentBarClass — left bar colour (e.g. "bg-violet-500")
+ * Premium minimal glassmorphism link card
+ * - Soft layered glass background
+ * - No visible borders
+ * - Smooth hover glow + elevation
+ * - Better spacing + typography
+ * - Deep-link aware
+ * - Modern minimal CTA styling
  */
+
 "use client";
 
 import { ExternalLink, Link2, Smartphone } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import type React from "react";
+
 import { trackClickAction } from "@/lib/actions";
 import { triggerDeepLink } from "@/lib/deeplinks";
 import { motionTokens } from "@/lib/motionTokens";
@@ -31,9 +28,21 @@ interface LinkCardProps {
     url: string;
     isDeepLink: boolean;
   };
-  accentClass: string;
-  /** Tailwind bg class for the left accent bar, e.g. "bg-violet-500" */
-  accentBarClass?: string;
+
+  /**
+   * Use this for tinted glass backgrounds
+   * Example:
+   * "bg-white/8 dark:bg-white/[0.06]"
+   */
+  accentClass?: string;
+
+  /**
+   * Optional glow color
+   * Example:
+   * "from-violet-500/20"
+   */
+  glowClass?: string;
+
   size?: "default" | "compact";
 }
 
@@ -41,15 +50,16 @@ export default function LinkCard({
   username,
   link,
   accentClass,
+  glowClass,
   size = "default",
 }: LinkCardProps) {
   const reduce = useReducedMotion();
+
   const isCompact = size === "compact";
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
 
-    // Fire-and-forget analytics — never block navigation
     trackClickAction(username, link.id).catch((err) => {
       console.error("Click tracking failed:", err);
     });
@@ -57,69 +67,123 @@ export default function LinkCard({
     triggerDeepLink(link.url, link.isDeepLink);
   };
 
-  const actionLabel = link.isDeepLink ? "App" : "External Link";
-
   return (
     <motion.a
       href={link.url}
       onClick={handleClick}
-      whileHover={reduce ? {} : { y: -2, scale: 1.01 }}
-      whileTap={{ scale: 0.98 }}
+      whileHover={
+        reduce
+          ? {}
+          : {
+            y: -4,
+            scale: 1.015,
+          }
+      }
+      whileTap={{ scale: 0.985 }}
       transition={{
         duration: motionTokens.duration.fast,
         ease: motionTokens.easing.smooth,
       }}
       className={cn(
-        // Layout
-        "flex items-center justify-between gap-3 w-full group relative overflow-hidden",
-        // Spacing + shape
-        isCompact ? "pl-3 pr-3 py-2 rounded-lg" : "pl-4 pr-4 py-3 rounded-xl",
-        // Glass card from theme
+        "group relative flex w-full items-center justify-between overflow-hidden",
+        "rounded-2xl backdrop-blur-2xl",
+        "transition-all duration-300",
+        "shadow-[0_8px_30px_rgb(0,0,0,0.12)]",
+        "hover:shadow-[0_20px_50px_rgb(0,0,0,0.22)]",
+        "bg-white/[0.08] dark:bg-white/[0.04]",
+        "before:absolute before:inset-0",
+        "before:bg-gradient-to-b before:from-white/[0.12] before:to-white/[0.03]",
+        "before:pointer-events-none",
+        isCompact ? "px-3 py-2.5" : "px-4 py-3.5",
         accentClass,
-        // Elevation
-        isCompact ? "shadow-sm" : "shadow-md",
       )}
     >
-      {/* Main label */}
-      <div className="flex items-center gap-3 flex-1 min-w-0">
+      {/* Ambient Glow */}
+      <div
+        className={cn(
+          "absolute inset-0 opacity-0 blur-3xl transition-opacity duration-500",
+          "group-hover:opacity-100",
+          "bg-gradient-to-r",
+          glowClass || "from-violet-500/10 via-fuchsia-500/10 to-cyan-500/10",
+        )}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 flex min-w-0 flex-1 items-center gap-3">
+        {/* Icon */}
         <div
           className={cn(
-            "size-8 rounded-lg flex items-center justify-center",
-            "bg-white/10 border border-white/10",
+            "flex shrink-0 items-center justify-center rounded-xl",
+            "bg-white/[0.08]",
+            "shadow-inner shadow-white/[0.04]",
+            "transition-transform duration-300",
+            "group-hover:scale-105",
+            isCompact ? "size-9" : "size-11",
           )}
-          aria-hidden="true"
         >
-          <Link2 size={14} />
+          <Link2
+            size={isCompact ? 15 : 18}
+            className="text-white/80"
+          />
         </div>
-        <span
-          className={cn(
-            "font-medium truncate",
-            isCompact ? "text-[12px]" : "text-sm sm:text-base",
-          )}
-        >
-          {link.title}
-        </span>
+
+        {/* Text */}
+        <div className="min-w-0 flex-1">
+          <p
+            className={cn(
+              "truncate font-medium tracking-[-0.02em]",
+              "text-white",
+              isCompact
+                ? "text-[13px]"
+                : "text-[15px] sm:text-base",
+            )}
+          >
+            {link.title}
+          </p>
+
+          <p className="mt-0.5 text-[11px] text-white/45">
+            {link.isDeepLink
+              ? "Opens directly in app"
+              : "External destination"}
+          </p>
+        </div>
       </div>
 
-      {/* Right side — badges + icon */}
-      <div className="flex items-center gap-2 opacity-80 group-hover:opacity-100 transition-opacity shrink-0">
-        <span
+      {/* Right Action */}
+      <div className="relative z-10 ml-3 flex shrink-0 items-center">
+        <div
           className={cn(
-            "flex items-center gap-1 rounded-full bg-white/10 border border-white/10 font-medium",
-            isCompact ? "text-[9px] px-2 py-0.5" : "text-[10px] px-2.5 py-0.5",
+            "flex items-center justify-center rounded-full",
+            "bg-white/[0.08]",
+            "backdrop-blur-md",
+            "transition-all duration-300",
+            "group-hover:bg-white/[0.14]",
+            isCompact ? "size-8" : "size-10",
           )}
-          title={
-            link.isDeepLink ? "Opens natively in the app" : "Opens in browser"
-          }
         >
           {link.isDeepLink ? (
-            <Smartphone size={isCompact ? 10 : 12} />
+            <Smartphone
+              size={isCompact ? 14 : 16}
+              className="text-white/75"
+            />
           ) : (
-            <ExternalLink size={isCompact ? 10 : 12} />
+            <ExternalLink
+              size={isCompact ? 14 : 16}
+              className="text-white/75"
+            />
           )}
-          {actionLabel}
-        </span>
+        </div>
       </div>
+
+      {/* Subtle Shine */}
+      <div
+        className={cn(
+          "absolute inset-0 opacity-0 transition-opacity duration-500",
+          "group-hover:opacity-100",
+          "bg-[linear-gradient(120deg,transparent,rgba(255,255,255,0.08),transparent)]",
+          "-translate-x-full group-hover:translate-x-full",
+        )}
+      />
     </motion.a>
   );
 }

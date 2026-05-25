@@ -108,14 +108,21 @@ export function triggerDeepLink(url: string, isDeepLinkEnabled: boolean): void {
     const start = Date.now();
     window.location.href = appScheme;
 
-    // Check if the user navigated away. If not, open the browser fallback
+    // Check if the user navigated away. If not, redirect the current window
     setTimeout(() => {
-      if (Date.now() - start < 1500) {
-        window.open(url, "_blank");
+      const timeElapsed = Date.now() - start;
+      const isPageHidden = document.hidden || document.visibilityState === "hidden";
+
+      // If the page is hidden, the app was likely successfully opened
+      if (isPageHidden) return;
+
+      // Fallback redirect in the same tab to bypass popup blockers in async callbacks
+      if (timeElapsed < 1500) {
+        window.location.href = url;
       }
     }, 1000);
   } else {
-    // Regular browser redirect
+    // Regular browser redirect in a new tab (allowed synchronously)
     window.open(url, "_blank");
   }
 }

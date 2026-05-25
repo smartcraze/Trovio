@@ -23,7 +23,7 @@ export async function seedDatabase() {
       bio: "Digital Artist & Creative Director. Creating visual stories that blend surrealism and warm futuristic aesthetics.",
       avatarUrl:
         "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&h=400&q=80",
-      theme: "sunset-glow",
+      theme: "sunset-boulevard",
       socials: {
         instagram: "https://instagram.com/elena_design",
         twitter: "https://twitter.com/elena_draws",
@@ -82,7 +82,7 @@ export async function seedDatabase() {
       bio: "Software Engineer & Open Source Advocate. Building high-performance microservices and modern web apps.",
       avatarUrl:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&h=400&q=80",
-      theme: "cyberpunk",
+      theme: "tech-innovation",
       socials: {
         github: "https://github.com/alex_mercer",
         twitter: "https://twitter.com/alex_dev",
@@ -151,7 +151,7 @@ export async function seedDatabase() {
       bio: "Audio Engineer & Synthesizer Enthusiast. Designing cinematic sample packs and ambient tracks.",
       avatarUrl:
         "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&h=400&q=80",
-      theme: "midnight-violet",
+      theme: "ocean-depths",
       socials: {
         spotify: "https://open.spotify.com/artist/marcus_vance",
         youtube: "https://youtube.com/@marcus_sounds",

@@ -4,10 +4,8 @@
  */
 "use client";
 
-import { ExternalLink, Link2, Smartphone } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
-import { trackClickAction } from "@/lib/actions";
-import { triggerDeepLink } from "@/lib/deeplinks";
+import LinkCard from "@/components/LinkCard";
 import { motionTokens } from "@/lib/motionTokens";
 import { cn } from "@/lib/utils";
 
@@ -64,7 +62,7 @@ export function ProfileLinksSection({
     return (
         <div className="space-y-4">
             <div className="flex items-center gap-2 px-1">
-                <span className={theme.sectionHeaderClass}>Curated Connections</span>
+                <h1 className={theme.sectionHeaderClass}>Links</h1>
             </div>
 
             <motion.div
@@ -74,41 +72,16 @@ export function ProfileLinksSection({
                 className="space-y-3"
             >
                 {visibleLinks.map((link) => (
-                    <motion.a
+                    <motion.div
                         key={link.id}
                         variants={itemVariants(!!reduce)}
-                        href={link.url}
-                        onClick={(event) => {
-                            event.preventDefault();
-                            trackClickAction(username, link.id).catch(() => undefined);
-                            triggerDeepLink(link.url, link.isDeepLink);
-                        }}
-                        whileHover={reduce ? {} : { y: -2 }}
-                        transition={{
-                            duration: motionTokens.duration.fast,
-                            ease: motionTokens.easing.smooth,
-                        }}
-                        className={cn(
-                            "flex items-center justify-between gap-4 rounded-xl px-4 py-3",
-                            theme.accentClass,
-                        )}
                     >
-                        <div className="flex items-center gap-3 min-w-0">
-                            <div className="size-8 rounded-lg bg-white/10 border border-white/10 flex items-center justify-center">
-                                <Link2 size={14} />
-                            </div>
-                            <span className="text-sm font-medium truncate">{link.title}</span>
-                        </div>
-
-                        <span className="flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full bg-white/10 border border-white/10">
-                            {link.isDeepLink ? (
-                                <Smartphone size={12} />
-                            ) : (
-                                <ExternalLink size={12} />
-                            )}
-                            {link.isDeepLink ? "App" : "External"}
-                        </span>
-                    </motion.a>
+                        <LinkCard
+                            username={username}
+                            link={link}
+                            accentClass={theme.accentClass}
+                        />
+                    </motion.div>
                 ))}
             </motion.div>
 
