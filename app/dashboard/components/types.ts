@@ -52,7 +52,4 @@ export interface DeleteTarget {
   title: string;
 }
 
-export type ChatMessage = {
-  role: "user" | "assistant" | "system";
-  content: string;
-};
+export type ChatMessage = any;

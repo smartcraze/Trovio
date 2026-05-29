@@ -1,9 +1,9 @@
 "use server";
 
 import { aiBioResponse, aiChatResponse, aiResponse } from "@/lib/ai/setup";
-import User from "@/lib/models/User";
-import dbConnect from "@/lib/mongodb";
 import { requireAuth } from "./helpers";
+
+// ─── Link Title Suggestions ───────────────────────────────────────────────────
 
 export async function generateSuggestionsAction(
   url: string,
@@ -21,16 +21,17 @@ export async function generateSuggestionsAction(
   try {
     const data = await aiResponse(prompt);
     return { success: true, data };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Failed to generate suggestions.";
     console.error("AI Suggestion Error:", error);
-    return {
-      success: false,
-      error:
-        error.message ||
-        "Failed to generate suggestions. Please check your API key setup.",
-    };
+    return { success: false, error: message };
   }
 }
+
+// ─── Bio Suggestions ─────────────────────────────────────────────────────────
 
 export async function generateBioSuggestionsAction(
   name: string,
@@ -41,34 +42,32 @@ export async function generateBioSuggestionsAction(
   try {
     const data = await aiBioResponse(prompt);
     return { success: true, data };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Failed to generate bio suggestions.";
     console.error("AI Bio Suggestion Error:", error);
-    return {
-      success: false,
-      error:
-        error.message ||
-        "Failed to generate bio suggestions. Please check your API key setup.",
-    };
+    return { success: false, error: message };
   }
 }
+
+// ─── Chat Assistant ───────────────────────────────────────────────────────────
 
 export async function sendChatMessageAction(
   messages: Array<{ role: "user" | "assistant" | "system"; content: string }>,
 ) {
   try {
     const session = await requireAuth();
-    await dbConnect();
-    const user = await User.findById(session.userId);
 
-    const reply = await aiChatResponse(messages, user);
+    const reply = await aiChatResponse(messages, session.userId);
     return { success: true, reply };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Failed to get AI response. Please check your API key setup.";
     console.error("AI Chat Error:", error);
-    return {
-      success: false,
-      error:
-        error.message ||
-        "Failed to get AI response. Please check your API key setup.",
-    };
+    return { success: false, error: message };
   }
 }

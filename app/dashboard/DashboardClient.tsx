@@ -1,12 +1,15 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import {
   BarChart3,
   Link2,
   Palette,
   ShoppingBag,
   User as UserIcon,
+  X,
 } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type React from "react";
 import { useEffect, useState, useTransition } from "react";
@@ -67,6 +70,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
   const [isPending, startTransition] = useTransition();
   const [activeTab, setActiveTab] = useState("profile");
   const [chartMounted, setChartMounted] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     setChartMounted(true);
@@ -118,17 +122,15 @@ export default function DashboardClient({ user }: DashboardClientProps) {
   const [profileBioVal, setProfileBioVal] = useState(user.bio || "");
 
   // ── Chat state ────────────────────────────────────────────────────────────
-  const [chatOpen, setChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     {
       role: "assistant",
       content:
-        "Hi! I am your Trivio AI Assistant. Ask me to suggest link titles, write a custom bio, or optimize your CTAs! What's on your mind today?",
+        "Hi! I'm your Trivio AI Assistant. Ask me to analyse your analytics, suggest link titles, write a bio, or anything else. What's on your mind?",
     },
   ]);
   const [chatInput, setChatInput] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
-
   // ── Handlers ──────────────────────────────────────────────────────────────
 
   const handleLogout = async () => {
@@ -241,6 +243,7 @@ export default function DashboardClient({ user }: DashboardClientProps) {
     directMessage?: string,
   ) => {
     if (e) e.preventDefault();
+
     const textToSend = directMessage !== undefined ? directMessage : chatInput;
     if (!textToSend.trim() || chatLoading) return;
 
@@ -255,14 +258,14 @@ export default function DashboardClient({ user }: DashboardClientProps) {
       if (res.success && res.reply) {
         setChatMessages((prev) => [
           ...prev,
-          { role: "assistant", content: res.reply },
+          { role: "assistant", content: res.reply! },
         ]);
       } else {
         setChatMessages((prev) => [
           ...prev,
           {
             role: "assistant",
-            content: `⚠️ Error: ${res.error || "Failed to get AI response."}`,
+            content: `⚠️ Error: ${res.error || "Failed to get a response."}`,
           },
         ]);
       }
@@ -317,8 +320,8 @@ export default function DashboardClient({ user }: DashboardClientProps) {
     const linksSummary =
       user.links.length > 0
         ? user.links
-          .map((l: LinkItem) => `"${l.title}" (${l.clickCount || 0} clicks)`)
-          .join(", ")
+            .map((l: LinkItem) => `"${l.title}" (${l.clickCount || 0} clicks)`)
+            .join(", ")
         : "no links yet";
     const prompt = `Please analyse my full analytics and tell me exactly what I need to change to get more clicks. Here is my current data: I have ${user.links.length} active links with ${totalClicks} total clicks. My links: ${linksSummary}. Give me a full breakdown with your top 3 specific actions I should take right now.`;
     setChatOpen(true);
@@ -459,19 +462,101 @@ export default function DashboardClient({ user }: DashboardClientProps) {
         onOpenChange={setDeleteConfirmOpen}
       />
 
-      {/* Floating AI Chat */}
-      <ChatAssistant
-        isOpen={chatOpen}
-        onToggle={() => setChatOpen((prev) => !prev)}
-        messages={chatMessages}
-        chatInput={chatInput}
-        setChatInput={setChatInput}
-        chatLoading={chatLoading}
-        onSendMessage={handleSendChatMessage}
-        links={user.links}
-        profileNameVal={profileNameVal}
-        linkUrlVal={linkUrlVal}
-      />
+      {/* ── Chat slide-in panel ──────────────────────────────────────── */}
+
+      {/* Backdrop — click outside to close */}
+      {chatOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/25 backdrop-blur-[2px]"
+          onClick={() => setChatOpen(false)}
+        />
+      )}
+
+      {/* Panel */}
+      <div
+        className={cn(
+          "fixed inset-y-0 right-0 z-50 w-full max-w-[50vw] shadow-2xl border-l border-border transition-transform duration-300 ease-in-out",
+          chatOpen ? "translate-x-0" : "translate-x-full",
+        )}
+      >
+        <ChatAssistant
+          isOpen={chatOpen}
+          onToggle={() => setChatOpen((prev) => !prev)}
+          messages={chatMessages}
+          chatInput={chatInput}
+          setChatInput={setChatInput}
+          chatLoading={chatLoading}
+          onSendMessage={handleSendChatMessage}
+          links={user.links}
+          profileNameVal={profileNameVal}
+          linkUrlVal={linkUrlVal}
+        />
+      </div>
+
+      {/* ── Bottom bar chat opener — hidden while panel is open ──────────── */}
+      {!chatOpen && (
+        <div className="fixed bottom-0 left-0 right-0 z-[60] flex justify-center pb-5 px-4 pointer-events-none">
+          <button
+            type="button"
+            onClick={() => setChatOpen((prev) => !prev)}
+            aria-label={chatOpen ? "Close AI chat" : "Open AI chat"}
+            className={cn(
+              "pointer-events-auto flex items-center gap-3 px-5 py-3 rounded-2xl shadow-2xl border transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer backdrop-blur-md",
+              chatOpen
+                ? "bg-background/95 border-border text-foreground"
+                : "bg-zinc-950/90 border-white/10 text-white",
+            )}
+          >
+            {chatOpen ? (
+              /* Close state */
+              <>
+                <div className="flex items-center gap-2.5">
+                  <div className="size-8 rounded-full overflow-hidden border border-white/10 shrink-0">
+                    <Image
+                      src="/chatbot.png"
+                      alt="Trivio AI"
+                      width={32}
+                      height={32}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                  <span className="text-sm font-medium">Close chat</span>
+                </div>
+                <span className="ml-1 text-xs opacity-60">✕</span>
+              </>
+            ) : (
+              /* Open state */
+              <>
+                <div className="relative shrink-0">
+                  <div className="size-8 rounded-full overflow-hidden border border-white/10">
+                    <Image
+                      src="/chatbot.png"
+                      alt="Trivio AI"
+                      width={32}
+                      height={32}
+                      className="object-cover w-full h-full"
+                    />
+                  </div>
+                  {/* Pulse dot */}
+                  <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-500" />
+                  </span>
+                </div>
+                <div className="flex flex-col items-start leading-tight">
+                  <span className="text-[13px] font-semibold tracking-tight">
+                    Trivio AI
+                  </span>
+                  <span className="text-[11px] opacity-60 font-normal">
+                    Ask me anything about your analytics
+                  </span>
+                </div>
+                <span className="ml-1 text-xs opacity-50">↑</span>
+              </>
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

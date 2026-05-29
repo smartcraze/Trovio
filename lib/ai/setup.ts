@@ -1,6 +1,24 @@
+/**
+ * lib/ai/setup.ts
+ *
+ * Core AI configuration for Trivio.
+ *
+ * Three capabilities exported:
+ *  aiResponse(prompt)               — structured link title suggestions (3 options)
+ *  aiBioResponse(prompt)            — structured bio suggestions (3 options)
+ *  aiChatResponse(messages, userId) — conversational agent with autonomous tool calling
+ *
+ * The chat function uses ToolLoopAgent so the model can call tools over
+ * multiple reasoning steps instead of receiving a hand-crafted data dump in
+ * the system prompt. It fetches exactly what it needs, when it needs it.
+ */
+
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { generateText, Output } from "ai";
+import { generateText, Output, stepCountIs, ToolLoopAgent } from "ai";
 import { z } from "zod";
+import { createDashboardTools } from "./tools";
+
+// ─── Model factory ────────────────────────────────────────────────────────────
 
 const FREE_MODEL = "openrouter/free";
 
@@ -11,7 +29,7 @@ function getModel() {
   return openrouter.chat(FREE_MODEL);
 }
 
-// ─── LINK OPTIMIZATION ──────────────────────────────────────────────────────
+// ─── Link Title Suggestions ───────────────────────────────────────────────────
 
 const LINK_SYSTEM_PROMPT = `You are an expert copywriter and conversions optimizer for bio link websites (like Linktree or Trivio).
 Your task is to analyze a link (its URL and current title) and generate three optimized button title options to maximize click-through rate (CTR).
@@ -20,9 +38,9 @@ Requirements:
 - Each button title MUST be under 50 characters.
 - Keep them engaging, clear, and relevant to the destination.
 - Generate three distinct styles of title suggestions:
-  1. professional (A clean, polished refinement of the current title)
-  2. descriptive (A title summarizing what the user will find)
-  3. action-oriented (A verb-driven call-to-action that drives clicks)`;
+  1. professional    — a clean, polished refinement of the current title
+  2. descriptive     — a title summarizing what the user will find
+  3. action-oriented — a verb-driven call-to-action that drives clicks`;
 
 const LinkSuggestionSchema = z.object({
   suggestions: z
@@ -31,7 +49,7 @@ const LinkSuggestionSchema = z.object({
         id: z
           .string()
           .describe(
-            "Unique identifier for the option, e.g. 'option-1', 'option-2', 'option-3'",
+            "Unique identifier, e.g. 'option-1', 'option-2', 'option-3'",
           ),
         title: z
           .string()
@@ -50,27 +68,24 @@ export async function aiResponse(prompt: string) {
   const { output } = await generateText({
     system: LINK_SYSTEM_PROMPT,
     model: getModel(),
-    output: Output.object({
-      schema: LinkSuggestionSchema,
-    }),
-    prompt: prompt,
+    output: Output.object({ schema: LinkSuggestionSchema }),
+    prompt,
   });
-  console.log("AI Response:", output);
   return output;
 }
 
-// ─── BIO OPTIMIZATION ───────────────────────────────────────────────────────
+// ─── Bio Suggestions ──────────────────────────────────────────────────────────
 
 const BIO_SYSTEM_PROMPT = `You are an expert copywriter and social media bio optimizer.
-Your task is to analyze a user's profile details (display name, current bio) and generate three optimized bio/description options to maximize audience engagement and click-through rates.
+Your task is to analyze a user's profile details and generate three optimized bio options to maximize engagement and click-through rates.
 
 Requirements:
-- Each bio suggestion MUST be under 160 characters.
+- Each bio MUST be under 160 characters.
 - Keep them engaging, clear, and relevant.
-- Generate three distinct styles of bio suggestions:
-  1. professional (Clear, professional, and authority-building)
-  2. creative (Catchy, unique, and personality-driven)
-  3. action-oriented (Clear value proposition leading into a call to action)`;
+- Generate three distinct styles:
+  1. professional    — clear, authority-building, and polished
+  2. creative        — catchy, unique, and personality-driven
+  3. action-oriented — clear value proposition with a call to action`;
 
 const BioSuggestionSchema = z.object({
   suggestions: z
@@ -79,7 +94,7 @@ const BioSuggestionSchema = z.object({
         id: z
           .string()
           .describe(
-            "Unique identifier for the option, e.g. 'option-1', 'option-2', 'option-3'",
+            "Unique identifier, e.g. 'option-1', 'option-2', 'option-3'",
           ),
         bio: z
           .string()
@@ -98,129 +113,119 @@ export async function aiBioResponse(prompt: string) {
   const { output } = await generateText({
     system: BIO_SYSTEM_PROMPT,
     model: getModel(),
-    output: Output.object({
-      schema: BioSuggestionSchema,
-    }),
-    prompt: prompt,
+    output: Output.object({ schema: BioSuggestionSchema }),
+    prompt,
   });
-  console.log("AI Bio Response:", output);
   return output;
 }
 
-// ─── CHAT ASSISTANT ─────────────────────────────────────────────────────────
+// ─── Chat Assistant ───────────────────────────────────────────────────────────
+const CHAT_INSTRUCTIONS = `You are "Trivio AI Assistant" — a premium conversions and analytics coach for bio link pages, similar to Linktree.
 
-const CHAT_SYSTEM_PROMPT = `You are "Trivio AI Assistant", a premium conversions & analytics coach for bio link pages (like Linktree / Trivio).
-Your goal is to help creators understand their analytics and take concrete actions to improve click-through rates, engagement, and revenue.
+Your mission is to help creators understand their data and take concrete, data-driven actions to grow clicks, engagement, and revenue.
 
-Guidelines:
-- Always be data-driven. Reference actual numbers from the user's analytics when giving advice.
-- Keep responses conversational, concise, and actionable. Use bullet points and clear headers.
-- When analysing analytics, identify: top performers, zero-click underperformers, traffic distribution imbalances, and quick-win improvements.
-- If suggesting link titles, ensure they are under 50 characters.
-- If suggesting bios, ensure they are under 160 characters.
-- When asked to analyse analytics, structure your response with: 📊 Summary → 🏆 Top Performer → ⚠️ Needs Attention → 💡 Recommendations.
-- Always end analytics analysis with 2-3 specific, immediately actionable steps the creator can take right now.`;
+You have access to the following tools and must use them whenever live data is needed. Never guess, estimate, or fabricate analytics or profile information.
 
+Available Tools:
+
+1. getProfile
+   Returns:
+* Display name
+* Username
+* Bio
+* Active theme
+* Avatar URL
+
+2. getLinks
+   Returns:
+
+* All bio links
+* Link title
+* URL
+* Click count
+* Deep-link enabled status
+
+3. getAnalytics
+   Returns:
+
+* Total clicks
+* Average clicks
+* Top-performing links
+* Zero-click links
+* Traffic share percentages
+* Full analytics breakdown
+
+4. getProducts
+   Returns:
+
+* Product name
+* Price
+* Description
+* Checkout URL
+* Remaining inventory or slots
+
+5. getSocialChannels
+   Returns:
+* Connected social platforms
+* Social profile URLs
+* 
+
+6 . ListThemes
+    Returns:
+* Available themes
+
+7 . ChangeTheme
+    Input: username themeId
+* Theme name (from ListThemes)
+    Returns:
+* Updated active theme
+
+Important Rules:
+
+* Always call the relevant tool before answering any question that depends on real user data.
+* Never make up numbers or analytics.
+* Reference actual titles, click counts, percentages, and performance metrics from tool responses.
+* Keep responses concise, friendly, insightful, and action-oriented.
+* Focus on helping creators improve conversions, engagement, clicks, and revenue.
+
+Analytics Response Format:
+📊 Summary
+🏆 Top Performer
+⚠️ Needs Attention
+💡 Recommendations
+
+Writing Style:
+
+* Use markdown formatting in responses.
+* Use bullet points for clarity.
+* Highlight important metrics using bold text.
+* Keep link title suggestions under 50 characters.
+* Keep bio suggestions under 160 characters.
+* End every analytics-related response with 2 to 3 actionable next steps the creator can implement immediately.`;
+
+/**
+ * Run the chat assistant with tool calling over multiple reasoning steps.
+ * The agent decides which tools to call based on the user's message — no
+ * manual data injection needed.
+ */
 export async function aiChatResponse(
-  messages: Array<{ role: "user" | "assistant" | "system"; content: string }>,
-  user?: any,
+  messages: Array<{
+    role: "user" | "assistant" | "system";
+    content: string;
+  }>,
+  userId: string,
 ) {
-  let systemPrompt = CHAT_SYSTEM_PROMPT;
+  const tools = createDashboardTools(userId);
 
-  if (user) {
-    const totalLinks = user.links ? user.links.length : 0;
-    const totalClicks = user.links
-      ? user.links.reduce((acc: number, l: any) => acc + (l.clickCount || 0), 0)
-      : 0;
-
-    // Sort links by click count descending
-    const sortedLinks = user.links
-      ? [...user.links].sort(
-          (a: any, b: any) => (b.clickCount || 0) - (a.clickCount || 0),
-        )
-      : [];
-
-    const topPerformer =
-      sortedLinks.length > 0 && (sortedLinks[0].clickCount || 0) > 0
-        ? sortedLinks[0]
-        : null;
-
-    const zeroClickLinks = sortedLinks.filter(
-      (l: any) => (l.clickCount || 0) === 0,
-    );
-
-    const avgClicksPerLink =
-      totalLinks > 0 ? (totalClicks / totalLinks).toFixed(1) : "0";
-
-    const linksInfo =
-      sortedLinks.length > 0
-        ? sortedLinks
-            .map((l: any) => {
-              const clicks = l.clickCount || 0;
-              const share =
-                totalClicks > 0 ? Math.round((clicks / totalClicks) * 100) : 0;
-              return `- "${l.title}" → ${clicks} clicks (${share}% of total traffic) | URL: ${l.url}${l.isDeepLink ? " [Deep Link Enabled]" : ""}`;
-            })
-            .join("\n")
-        : "No links added yet.";
-
-    const productsInfo =
-      user.products && user.products.length > 0
-        ? user.products
-            .map(
-              (p: any) =>
-                `- "${p.title}" priced at $${p.price}: "${p.description}" → checkout: ${p.purchaseUrl}`,
-            )
-            .join("\n")
-        : "No products added yet.";
-
-    const socialsInfo =
-      user.socials && Object.keys(user.socials).length > 0
-        ? Object.entries(user.socials)
-            .filter(([, v]) => v)
-            .map(([platform, url]) => `- ${platform}: ${url}`)
-            .join("\n")
-        : "No social channels linked.";
-
-    systemPrompt += `
-
-═══════════════════════════════════════════════
-FULL ANALYTICS & PROFILE SNAPSHOT
-═══════════════════════════════════════════════
-
-👤 PROFILE
-- Display Name: ${user.name || "N/A"}
-- Username: @${user.username || "N/A"}
-- Current Bio: "${user.bio || "(empty — no bio set)"}"
-- Active Theme: ${user.theme || "default"}
-
-📊 ANALYTICS SUMMARY
-- Total Active Links: ${totalLinks}
-- Total Clicks (all time): ${totalClicks}
-- Average Clicks Per Link: ${avgClicksPerLink}
-- Top Performer: ${topPerformer ? `"${topPerformer.title}" with ${topPerformer.clickCount} clicks` : "No clicks recorded yet"}
-- Zero-Click Links (${zeroClickLinks.length}): ${zeroClickLinks.length > 0 ? zeroClickLinks.map((l: any) => `"${l.title}"`).join(", ") : "None — great job!"}
-
-🔗 LINK PERFORMANCE (sorted by clicks, highest first)
-${linksInfo}
-
-🛍️ PRODUCTS (${user.products ? user.products.length : 0}/3 slots used)
-${productsInfo}
-
-🌐 SOCIAL CHANNELS
-${socialsInfo}
-
-═══════════════════════════════════════════════
-
-USE THIS DATA to give highly personalized, specific, data-driven recommendations. Always reference actual link titles, click counts, traffic percentages, and product names. Identify patterns, flag underperformers, celebrate top performers, and suggest concrete improvements the creator can implement immediately.`;
-  }
-
-  const { text } = await generateText({
-    system: systemPrompt,
+  const agent = new ToolLoopAgent({
     model: getModel(),
-    messages: messages,
+    instructions: CHAT_INSTRUCTIONS,
+    tools,
+    stopWhen: stepCountIs(10),
   });
-  return text;
+
+  const result = await agent.generate({ messages });
+  return await result.text;
 }
 
 export type LinkSuggestions = z.infer<typeof LinkSuggestionSchema>;

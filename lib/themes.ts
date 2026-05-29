@@ -414,6 +414,12 @@ export const THEMES: Record<string, IThemeConfig> = {
   },
 };
 
+export function listThemes() {
+  return Object.values(THEMES).map(({ id }) => ({
+    id,
+  }));
+}
+
 /** Returns the theme config for a given id, defaulting to glass-dark */
 export function getTheme(themeId: string): IThemeConfig {
   return THEMES[themeId] ?? THEMES["glass-dark"];
