@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import { ShoppingBag, Smartphone, TrendingUp } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
-import { Smartphone, ShoppingBag, TrendingUp } from "lucide-react";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motionTokens } from "@/lib/motionTokens";
 
 export function LandingFeatures() {

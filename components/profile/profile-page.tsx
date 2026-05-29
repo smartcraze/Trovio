@@ -78,10 +78,7 @@ const sectionVariants = (reduce: boolean) => ({
   },
 });
 
-export function ProfilePage({
-  user,
-  theme,
-}: ProfilePageProps) {
+export function ProfilePage({ user, theme }: ProfilePageProps) {
   const reduce = useReducedMotion();
 
   const hasProducts = user.products.length > 0;
@@ -107,10 +104,7 @@ export function ProfilePage({
 
       {/* Ambient glow */}
       <div
-        className={cn(
-          "pointer-events-none absolute inset-0",
-          theme.glowClass,
-        )}
+        className={cn("pointer-events-none absolute inset-0", theme.glowClass)}
         aria-hidden="true"
       />
 
@@ -140,10 +134,7 @@ export function ProfilePage({
             variants={sectionVariants(!!reduce)}
             className="flex justify-center"
           >
-            <ProfileHeader
-              user={user}
-              theme={theme}
-            />
+            <ProfileHeader user={user} theme={theme} />
           </motion.section>
 
           {/* ===================================================== */}
@@ -155,8 +146,6 @@ export function ProfilePage({
               variants={sectionVariants(!!reduce)}
               className="mt-10"
             >
-
-
               <div className="space-y-4">
                 <ProfileLinksSection
                   links={user.links}
@@ -182,9 +171,7 @@ export function ProfilePage({
                   "shadow-[0_8px_40px_rgba(0,0,0,0.18)]",
                 )}
               >
-                <p className="text-sm text-white/50">
-                  No links added yet.
-                </p>
+                <p className="text-sm text-white/50">No links added yet.</p>
               </div>
             </motion.section>
           )}
@@ -198,7 +185,6 @@ export function ProfilePage({
               variants={sectionVariants(!!reduce)}
               className="mt-12"
             >
-
               <div className="space-y-4">
                 <ProductsShowcase
                   products={user.products}
@@ -237,10 +223,7 @@ export function ProfilePage({
           {/* FOOTER */}
           {/* ===================================================== */}
 
-          <motion.div
-            variants={sectionVariants(!!reduce)}
-            className="mt-14"
-          >
+          <motion.div variants={sectionVariants(!!reduce)} className="mt-14">
             <ProfileFooter theme={theme} />
           </motion.div>
         </div>

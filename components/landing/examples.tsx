@@ -1,15 +1,15 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import { motion, useReducedMotion } from "motion/react";
 import { ChevronRight } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import Link from "next/link";
+import React from "react";
 import {
   Card,
+  CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
 } from "@/components/ui/card";
 import { motionTokens } from "@/lib/motionTokens";
 

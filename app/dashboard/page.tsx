@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
-import dbConnect from "@/lib/mongodb";
 import User from "@/lib/models/User";
+import dbConnect from "@/lib/mongodb";
 import DashboardClient from "./DashboardClient";
 
 export const dynamic = "force-dynamic";
@@ -26,7 +26,6 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  // Convert mongoose model to plain object for Client Component
   const plainUser = JSON.parse(JSON.stringify(user));
 
   return <DashboardClient user={plainUser} />;

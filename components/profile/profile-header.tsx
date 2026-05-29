@@ -61,10 +61,7 @@ function UsernameLabel({
   if (themeId === "anime-sakura") {
     return (
       <p
-        className={cn(
-          "text-[12px] font-semibold tracking-wide",
-          usernameClass,
-        )}
+        className={cn("text-[12px] font-semibold tracking-wide", usernameClass)}
       >
         ★ @{username}
       </p>
@@ -84,10 +81,7 @@ function UsernameLabel({
   );
 }
 
-export function ProfileHeader({
-  user,
-  theme,
-}: ProfileHeaderProps) {
+export function ProfileHeader({ user, theme }: ProfileHeaderProps) {
   const reduce = useReducedMotion();
 
   return (
@@ -104,18 +98,11 @@ export function ProfileHeader({
         duration: motionTokens.duration.normal,
         ease: motionTokens.easing.smooth,
       }}
-      className={cn(
-        "flex w-full items-start",
-        "gap-5 sm:gap-6",
-      )}
+      className={cn("flex w-full items-start", "gap-5 sm:gap-6")}
     >
       {/* Avatar */}
       <div className="shrink-0 pt-1">
-        <ProfileAvatar
-          avatarUrl={user.avatarUrl}
-          name={user.name}
-          size={88}
-        />
+        <ProfileAvatar avatarUrl={user.avatarUrl} name={user.name} size={88} />
       </div>
 
       {/* Content */}
@@ -155,19 +142,16 @@ export function ProfileHeader({
               theme.textSecondary,
             )}
           >
-            {theme.id === "japan-minimal"
-              ? `「 ${user.bio} 」`
-              : user.bio}
+            {theme.id === "japan-minimal" ? `「 ${user.bio} 」` : user.bio}
           </p>
         )}
 
         {/* Socials */}
-        {user.socials &&
-          Object.values(user.socials).some(Boolean) && (
-            <div className="mt-3.5">
-              <ProfileSocials socials={user.socials} />
-            </div>
-          )}
+        {user.socials && Object.values(user.socials).some(Boolean) && (
+          <div className="mt-3.5">
+            <ProfileSocials socials={user.socials} />
+          </div>
+        )}
       </div>
     </motion.div>
   );

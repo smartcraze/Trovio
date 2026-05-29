@@ -15,7 +15,7 @@ import { ExternalLink, Link2, Smartphone } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import type React from "react";
 
-import { trackClickAction } from "@/lib/actions";
+import { trackClickAction } from "@/lib/actions/analytics";
 import { triggerDeepLink } from "@/lib/deeplinks";
 import { motionTokens } from "@/lib/motionTokens";
 import { cn } from "@/lib/utils";
@@ -75,9 +75,9 @@ export default function LinkCard({
         reduce
           ? {}
           : {
-            y: -4,
-            scale: 1.015,
-          }
+              y: -4,
+              scale: 1.015,
+            }
       }
       whileTap={{ scale: 0.985 }}
       transition={{
@@ -121,10 +121,7 @@ export default function LinkCard({
             isCompact ? "size-9" : "size-11",
           )}
         >
-          <Link2
-            size={isCompact ? 15 : 18}
-            className="text-white/80"
-          />
+          <Link2 size={isCompact ? 15 : 18} className="text-white/80" />
         </div>
 
         {/* Text */}
@@ -133,18 +130,14 @@ export default function LinkCard({
             className={cn(
               "truncate font-medium tracking-[-0.02em]",
               "text-white",
-              isCompact
-                ? "text-[13px]"
-                : "text-[15px] sm:text-base",
+              isCompact ? "text-[13px]" : "text-[15px] sm:text-base",
             )}
           >
             {link.title}
           </p>
 
           <p className="mt-0.5 text-[11px] text-white/45">
-            {link.isDeepLink
-              ? "Opens directly in app"
-              : "External destination"}
+            {link.isDeepLink ? "Opens directly in app" : "External destination"}
           </p>
         </div>
       </div>
@@ -162,10 +155,7 @@ export default function LinkCard({
           )}
         >
           {link.isDeepLink ? (
-            <Smartphone
-              size={isCompact ? 14 : 16}
-              className="text-white/75"
-            />
+            <Smartphone size={isCompact ? 14 : 16} className="text-white/75" />
           ) : (
             <ExternalLink
               size={isCompact ? 14 : 16}

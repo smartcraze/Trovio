@@ -1,5 +1,5 @@
-import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_key_trivio";
 

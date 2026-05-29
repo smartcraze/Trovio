@@ -1,18 +1,18 @@
 "use client";
 
-import React from "react";
 import {
-  User,
-  Link2,
-  ShoppingBag,
-  Palette,
   BarChart3,
-  Plus,
-  Smartphone,
   Check,
   ExternalLink,
+  Link2,
+  Palette,
+  Plus,
+  ShoppingBag,
+  Smartphone,
   Sparkles,
+  User,
 } from "lucide-react";
+import React from "react";
 import { cn } from "@/lib/utils";
 
 export function DashboardMockup() {

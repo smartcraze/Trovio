@@ -353,7 +353,8 @@ export const THEMES: Record<string, IThemeConfig> = {
     buttonClass:
       "bg-gradient-to-r from-[#6366f1] to-[#06b6d4] hover:brightness-110 text-white font-extrabold uppercase tracking-wider text-[11px] rounded-none py-3 px-6 shadow-[3px_3px_0px_0px_#6366f1] transition-all",
     priceClass: "text-[#06b6d4] font-black text-lg",
-    avatarRing: "ring-2 ring-[#06b6d4] ring-offset-4 ring-offset-[#06080e] border border-dashed border-[#6366f1]",
+    avatarRing:
+      "ring-2 ring-[#06b6d4] ring-offset-4 ring-offset-[#06080e] border border-dashed border-[#6366f1]",
   },
 
   // ── 12. Botanical Garden 🌿 (theme-factory #9) ──────────────────────────────

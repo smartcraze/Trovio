@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { ArrowRight, Loader2, Lock, User } from "lucide-react";
 import Link from "next/link";
-import { loginAction } from "@/lib/actions";
+import { useRouter } from "next/navigation";
+import type React from "react";
+import { useState, useTransition } from "react";
+import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,8 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { BrandLogo } from "@/components/brand-logo";
-import { ArrowRight, Loader2, Lock, User } from "lucide-react";
+import { loginAction } from "@/lib/actions/auth";
 
 export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);

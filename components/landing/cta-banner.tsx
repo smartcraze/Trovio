@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight } from "lucide-react";
+import { motion, useReducedMotion } from "motion/react";
+import Link from "next/link";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { motionTokens } from "@/lib/motionTokens";
 

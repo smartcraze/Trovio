@@ -1,6 +1,6 @@
-import dbConnect from "./mongodb";
-import User from "./models/User";
 import bcrypt from "bcryptjs";
+import User from "./models/User";
+import dbConnect from "./mongodb";
 
 export async function seedDatabase() {
   await dbConnect();

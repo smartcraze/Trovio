@@ -111,7 +111,8 @@ export function triggerDeepLink(url: string, isDeepLinkEnabled: boolean): void {
     // Check if the user navigated away. If not, redirect the current window
     setTimeout(() => {
       const timeElapsed = Date.now() - start;
-      const isPageHidden = document.hidden || document.visibilityState === "hidden";
+      const isPageHidden =
+        document.hidden || document.visibilityState === "hidden";
 
       // If the page is hidden, the app was likely successfully opened
       if (isPageHidden) return;

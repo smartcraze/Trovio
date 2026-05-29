@@ -1,16 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
-import { getTheme, THEMES } from "@/lib/themes";
 import {
-  Smartphone,
-  Sparkles,
-  ShoppingBag,
   ExternalLink,
   Globe,
+  ShoppingBag,
+  Smartphone,
+  Sparkles,
 } from "lucide-react";
+import React, { useState } from "react";
 import { BrandLogo } from "@/components/brand-logo";
 import { InstagramIcon, TwitterIcon } from "@/components/icons";
+import { getTheme, THEMES } from "@/lib/themes";
 import { cn } from "@/lib/utils";
 
 export default function ThemeSwitcherPreview() {
